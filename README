@@ -1,1 +1,54 @@
-DigitalOcean Ansible Repo
+DigitalOcean Ansible Repo  
+  
+#Manual Create  
+ansible localhost -m digital_ocean_droplet -a state=present name=ansible-3 oauth_token=XX size=s-1vcpu-1gb region=lon1 image=ubuntu-16-04-x64 ssh_keys=29424620  
+#Manual Delete  
+ansible localhost -m digital_ocean_droplet -a state=absent id=XXXXX oauth_token=XXXX  
+  
+#Playbook using DigitalOcean MODULES in role and encrypted VAR  
+##roles/deploy/tasks/main.yml
+ansible-playbook site.yml --ask-vault-pass  
+  
+#DO ansible installed doc example - droplet  
+ansible-doc digital_ocean_droplet  
+  
+`  
+---  
+# tasks file for roles/deploy
+- name: ensure a droplet is present
+  digital_ocean_droplet:
+    state: present
+    name: ansible-4
+    oauth_token: "{{ token }}"
+    size: s-1vcpu-1gb 
+    region: lon1
+    image: ubuntu-16-04-x64
+    ssh_keys: 29424620
+    wait_timeout: 500
+  register: droplet_info
+- debug:
+    var: droplet_info`
+  
+#Playbook using DigitalOcean COLLECTION in role and encrypted VAR  
+##roles/deploy/tasks/main.yml  
+ansible-playbook collections.yml --ask-vault-pass 
+  
+#DO Collection doc example - droplet  
+ansible-doc community.digitalocean.digital_ocean_droplet  
+  
+`  
+---
+# tasks file for roles/deploy
+- name: ensure a droplet is present
+  community.digitalocean.digital_ocean_droplet:
+    state: present
+    name: ansible-4
+    oauth_token: "{{ token }}"
+    size: s-1vcpu-1gb 
+    region: lon1
+    image: ubuntu-16-04-x64
+    ssh_keys: 29424620
+    wait_timeout: 500
+  register: droplet_info
+- debug:
+    var: droplet_info`
