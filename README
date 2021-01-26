@@ -5,18 +5,20 @@ ansible localhost -m digital_ocean_droplet -a state=present name=ansible-3 oauth
 #Manual Delete  
 ansible localhost -m digital_ocean_droplet -a state=absent id=XXXXX oauth_token=XXXX  
   
-#Playbook using DigitalOcean MODULES in role and encrypted VAR  
-##roles/deploy/tasks/main.yml
-ansible-playbook site.yml --ask-vault-pass  
-  
-#DO ansible installed doc example - droplet  
+#Playbook using DigitalOcean in-built MODULES in role and encrypted VAR  
+
+##DO ansible installed doc example - droplet  
 ansible-doc digital_ocean_droplet  
+
+##Execute playbook
+ansible-playbook module-role.yml --ask-vault-pass  
   
-`  
+  
+##roles/deploy-using-module/tasks/main.yml
 ---  
-# tasks file for roles/deploy
+# tasks file for roles/deploy-using-module
 - name: ensure a droplet is present
-  digital_ocean_droplet:
+  digital_ocean_droplet: <-- MODULE USED IS STANDARD ANSIBLE
     state: present
     name: ansible-4
     oauth_token: "{{ token }}"
@@ -30,17 +32,26 @@ ansible-doc digital_ocean_droplet
     var: droplet_info`
   
 #Playbook using DigitalOcean COLLECTION in role and encrypted VAR  
-##roles/deploy/tasks/main.yml  
-ansible-playbook collections.yml --ask-vault-pass 
-  
-#DO Collection doc example - droplet  
+
+##Using project ansible.cfg to force using of ./collections PATH
+##Means that everything is maintained WITHIN repo
+##So anyone pulling the GIT repo will get the same collection
+##You can also pin the collection in requirements.yml to specific version
+##the .gitignore means that the actual collection won't get put in GIT repo
+##Others using repo can install the SAME collection using
+## ansible-galaxy collection install -r collections/requirements.yml -p ./collections  
+
+##DO Collection doc example - droplet  
 ansible-doc community.digitalocean.digital_ocean_droplet  
+
+##Execute playbook
+ansible-playbook collection-role.yml --ask-vault-pass 
   
-`  
+##roles/deploy-using-collection/tasks/main.yml  
 ---
-# tasks file for roles/deploy
+# tasks file for roles/deploy-using-collection
 - name: ensure a droplet is present
-  community.digitalocean.digital_ocean_droplet:
+  community.digitalocean.digital_ocean_droplet: <-- COLLECTION MODULE IS USED
     state: present
     name: ansible-4
     oauth_token: "{{ token }}"

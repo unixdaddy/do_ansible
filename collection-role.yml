@@ -5,4 +5,4 @@
     - community.digitalocean
 
   roles:
-    - deploy
+    - deploy-using-collection
