@@ -5,10 +5,14 @@ ansible localhost -m digital_ocean_droplet -a state=present name=ansible-3 oauth
 #Manual Delete  
 ansible localhost -m digital_ocean_droplet -a state=absent id=XXXXX oauth_token=XXXX  
 
+
+
 #host/inventory file contents <-- alter as required different groupings or names
 [server]
 ansible-1
 ansible-2
+
+
   
 #Playbook using DigitalOcean in-built MODULES in role and encrypted VAR  
 
@@ -19,7 +23,6 @@ ansible-doc digital_ocean_droplet
 #ansible-playbook module-role.yml --ask-vault-pass <-- need to alter tasks/main.yml to remove loop
 #This will make use of hosts to build
 ansible-playbook module-role.yml -i hosts --ask-vault-pass <--- builds VMs with these names 
-  
   
 ##roles/deploy-using-module/tasks/main.yml
 ---  
@@ -39,6 +42,9 @@ ansible-playbook module-role.yml -i hosts --ask-vault-pass <--- builds VMs with 
   register: droplet_info
 - debug:
     var: droplet_info
+
+
+
   
 #Playbook using DigitalOcean COLLECTION in role and encrypted VAR  
 
