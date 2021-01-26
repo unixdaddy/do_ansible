@@ -4,6 +4,11 @@ DigitalOcean Ansible Repo
 ansible localhost -m digital_ocean_droplet -a state=present name=ansible-3 oauth_token=XX size=s-1vcpu-1gb region=lon1 image=ubuntu-16-04-x64 ssh_keys=29424620  
 #Manual Delete  
 ansible localhost -m digital_ocean_droplet -a state=absent id=XXXXX oauth_token=XXXX  
+
+#host/inventory file contents <-- alter as required different groupings or names
+[server]
+ansible-1
+ansible-2
   
 #Playbook using DigitalOcean in-built MODULES in role and encrypted VAR  
 
@@ -11,7 +16,9 @@ ansible localhost -m digital_ocean_droplet -a state=absent id=XXXXX oauth_token=
 ansible-doc digital_ocean_droplet  
 
 ##Execute playbook
-ansible-playbook module-role.yml --ask-vault-pass  
+#ansible-playbook module-role.yml --ask-vault-pass <-- need to alter tasks/main.yml to remove loop
+#This will make use of hosts to build
+ansible-playbook module-role.yml -i hosts --ask-vault-pass <--- builds VMs with these names 
   
   
 ##roles/deploy-using-module/tasks/main.yml
@@ -19,17 +26,19 @@ ansible-playbook module-role.yml --ask-vault-pass
 # tasks file for roles/deploy-using-module
 - name: ensure a droplet is present
   digital_ocean_droplet: <-- MODULE USED IS STANDARD ANSIBLE
-    state: present
-    name: ansible-4
+    state: "{{ state }}" #present
+    name: "{{ item }}" <-- NAMES FROM INVENTORY IN LOOP 
     oauth_token: "{{ token }}"
-    size: s-1vcpu-1gb 
-    region: lon1
-    image: ubuntu-16-04-x64
-    ssh_keys: 29424620
+    size: "{{ size }} " #s-1vcpu-1gb 
+    region: "{{ region }}" #lon1
+    image: "{{ image }} " #ubuntu-16-04-x64
+    ssh_keys: "{{ key }}" #29424620
     wait_timeout: 500
+  with_inventory_hostnames:
+    - server <-- USES GROUP TO BUILD VMs IN A LOOP
   register: droplet_info
 - debug:
-    var: droplet_info`
+    var: droplet_info
   
 #Playbook using DigitalOcean COLLECTION in role and encrypted VAR  
 
@@ -45,21 +54,24 @@ ansible-playbook module-role.yml --ask-vault-pass
 ansible-doc community.digitalocean.digital_ocean_droplet  
 
 ##Execute playbook
-ansible-playbook collection-role.yml --ask-vault-pass 
+#ansible-playbook collection-role.yml --ask-vault-pass <-- would need to alter tasks/main.yml to remove loop
+ansible-playbook collection-role.yml -i hosts --ask-vault-pass <---  Builds VMs with these names
   
 ##roles/deploy-using-collection/tasks/main.yml  
 ---
 # tasks file for roles/deploy-using-collection
 - name: ensure a droplet is present
   community.digitalocean.digital_ocean_droplet: <-- COLLECTION MODULE IS USED
-    state: present
-    name: ansible-4
+    state: "{{ state }}" #present 
+    name: "{{ item }}" <-- NAMES FROM INVENTORY IN LOOP
     oauth_token: "{{ token }}"
-    size: s-1vcpu-1gb 
-    region: lon1
-    image: ubuntu-16-04-x64
-    ssh_keys: 29424620
+    size: "{{ size }} " #s-1vcpu-1gb 
+    region: "{{ region }}" #lon1
+    image: "{{ image }} " #ubuntu-16-04-x64
+    ssh_keys: "{{ key }}" #29424620
     wait_timeout: 500
+  with_inventory_hostnames:
+    - server <-- USES GROUP TO BUILD VMs IN A LOOP
   register: droplet_info
 - debug:
-    var: droplet_info`
+    var: droplet_info
