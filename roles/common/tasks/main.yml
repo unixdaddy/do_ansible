@@ -31,15 +31,119 @@
 
 # Add specified repository into sources list using specified filename.
 - apt_repository:
-    repo: deb "{{ CRIO_REPO }}cri-o:/{{ CRIO_VERSION }}/{{ OS }}" /
+    repo: deb "{{ item }}" /
     state: present
     update_cache: false
     filename: crio.repo
+  loop:
+    - "{{ LIBCONTAINERS_REPO }}"
+    - "{{ CRIO_REPO }}"
 
-- name: Add CRIO apt key
+- name: Add CRIO and K8s apt keys
   apt_key:
     url:  "{{ item }}"
     state: present
   loop:
-    - "{{ CRIO_REPO }}cri-o:/{{ CRIO_VERSION }}/{{ OS }}/Release,key"
-    - "{{ CRIO_REPO }}{{ OS }}/Release,key"
+    - "{{ CRIO_REPO }}/Release.key"
+    - "{{ LIBCONTAINERS_REPO }}/Release.key"
+    - "{{ K8S_KEY }}"
+    #- "{{ CRIO_REPO }}cri-o:/{{ CRIO_VERSION }}/{{ OS }}/Release.key"
+    #- "{{ CRIO_REPO }}{{ OS }}/Release.key"
+
+# Install CRIO packages
+- name: Install CRIO and COMMON packages
+  apt:
+    name: "{{ item }}"  
+    update_cache: true
+  loop:
+    - "{{ CRIO_PACKAGES }}"
+    - "{{ COMMON_PACKAGES }}"
+
+# Copy CGROUP File for CRI-O to host
+- name: Copy CGGROUP file to host
+  copy:
+    src: "{{ CGROUP_FILE }}"
+    dest: "{{ CGROUP_PATH}}{{ CGROUP_FILE }}"
+
+- name: Issue daemon-reload and start CRIO
+  systemd:
+    state: started
+    daemon_reload: yes
+    name: crio
+    enabled: true
+
+
+- name: Download CRI-O tools
+  unarchive:
+    src: "{{ item }}"
+    dest: /usr/local/bin
+    remote_src: yes
+  loop:
+    - "{{ CRICTL_PACKAGE }}"
+    - "{{ CRITEST_PACKAGE }}"
+
+# Copy K8s repo file to host 
+- name: Copy K8s file to host
+  copy:
+    src: "{{ K8S_REPO }}"
+    dest: "{{ APT_REPO_PATH}}{{ K8S_REPO }}"
+
+# Install K8s  packages
+- name: Install K8s packages
+  apt:
+    name: "{{ item }}"  
+    update_cache: true
+  loop:
+    - "{{ K8S_PACKAGES }}"
+
+# Prevent K8S from being upgraded.
+- name: Set K8s on hold
+  command: apt-mark hold "{{ K8S_PACKAGES }}"
+
+# Restart CRI-O
+- name: Issue daemon-reload and reload CRIO
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: crio
+
+# Need to install K8S using kubeadm
+- name: Install K8s
+  command: kubeadm init --apiserver-advertise-address={{ ansible_default_ipv4.address }}
+
+- name: Create a .kube directory if it does not exist
+  file:
+    path: "{{ ansible_env.HOME }}/.kube"
+    state: directory
+    mode: '0755'
+
+
+# Setup kube config file
+- name: Copy kubeconfig file on the remote machine to the HOME dir
+  copy:
+    src: "{{ K8S_CONFIG }}"
+    dest: "{{ ansible_env.HOME }}/.kube/config"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_effective_group_id }}"
+    remote_src: yes
+
+- name: Create a Deployment by reading the definition from WEB
+  command: kubectl create -f "{{ CNI }}" 
+
+- name: Remove Taint from K8s Master
+  command: "{{ NO_TAINT }}" 
+
+- name: Update registery file
+  replace:
+    path: /etc/crio/crio.conf
+    regexp: '^#registeries'
+    replace: 'registries = [ "docker.io", "quay.io", "registry.fedoraproject.org", "registry.opensuse.org" ]'
+    # "path=/etc/crio/crio.conf regexp='^#registries = \[' replace='registries = [ \"docker.io\", \"quay.io\", \"registry.fedoraproject.org\", \"registry.opensuse.org\" ]'"
+
+# Restart CRI-O
+- name: Issue daemon-reload and reload CRIO
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: crio
+
