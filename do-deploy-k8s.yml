@@ -14,15 +14,20 @@
         key: 29424620
         server: ansible-5
 
-- name: check setup
+- name: Configure K8s host
   hosts: just_created
   vars:
           #ansible_ssh_user: root
           ### don't work######ansible_ssh_private_key_file: "{{ lookup('file','~/.ssh/id_rsa') }}"
           #workes##### ansible_ssh_private_key_file: "~/.ssh/id_rsa"
   
-  tasks:
-  - name: Collect only facts returned by facter
-    setup:
-    tags: setup
-
+  roles:
+    - role: common
+  #tasks:
+  #- name: Collect only facts returned by facter
+  #  setup:
+  #  register: setup
+  #  tags: setup
+  #- name: debug output of facts
+  #  debug:
+  #    var: setup

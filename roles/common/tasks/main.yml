@@ -1,2 +1,45 @@
 ---
 # tasks file for roles/common
+# load required modules
+- name: Add the reqiured modules
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - br_netfilter
+    - overlay
+# disable firewall
+- name: disable UFW
+  ufw:
+    state: disabled
+
+# Disable Swap
+- name: disable swap
+  command: swapoff -av
+
+# Set ip forwarding on in /proc and in the sysctl file and reload if necessary
+- sysctl:
+    name: "{{ item }}"
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  loop:
+    - net.ipv4.ip_forward
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
+# Add specified repository into sources list using specified filename.
+- apt_repository:
+    repo: deb "{{ CRIO_REPO }}cri-o:/{{ CRIO_VERSION }}/{{ OS }}" /
+    state: present
+    update_cache: false
+    filename: crio.repo
+
+- name: Add CRIO apt key
+  apt_key:
+    url:  "{{ item }}"
+    state: present
+  loop:
+    - "{{ CRIO_REPO }}cri-o:/{{ CRIO_VERSION }}/{{ OS }}/Release,key"
+    - "{{ CRIO_REPO }}{{ OS }}/Release,key"

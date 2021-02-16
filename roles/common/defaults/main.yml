@@ -1,2 +1,5 @@
 ---
 # defaults file for roles/common
+OS: xUbuntu_20.04 # doesn't appear to be a 20.10 for crio
+CRIO_VERSION: "1.20"
+CRIO_REPO: http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/
