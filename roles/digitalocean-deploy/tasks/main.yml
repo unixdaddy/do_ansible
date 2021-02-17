@@ -1,0 +1,35 @@
+---
+# tasks file for roles/deploy
+- name: ensure a droplet is present
+  community.digitalocean.digital_ocean_droplet:
+    state: "{{ state }}" #present
+    name: "{{ item  }}" #ansible-4
+    #oauth_token: "{{ oauth_token }}"
+    oauth_token: "{{ lookup('env','OAUTH_TOKEN') }}"
+    size: "{{ size }} " #s-1vcpu-1gb 
+    region: "{{ region }}" #lon1
+    image: "{{ image }} " #ubuntu-16-04-x64
+    ssh_keys: "{{ key }}" #29424620
+    wait_timeout: 500
+  with_inventory_hostnames:
+    - just_created
+  register: droplet_info
+- debug:
+    var: droplet_info.results 
+- name: Wait for port 22 to become open on the host, don't start checking for 60 seconds
+  # both wait_for and wait_for_connection work with the right delay/timeout
+  #wait_for_connection:
+  #  delay: 60
+  #  timeout: 300
+  wait_for:
+    host: "{{ item.data.ip_address }}"
+    port: 22
+    delay: 60
+    timeout: 300
+  loop: "{{ droplet_info.results }}"
+- name: Add host to group 'just_created' 
+  add_host:
+    name: '{{ item.data.droplet.name }}'
+    ansible_ssh_host: '{{ item.data.ip_address }}'
+    groups: just_created
+  loop: "{{ droplet_info.results }}"
