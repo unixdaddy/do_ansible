@@ -12,7 +12,8 @@
     ssh_keys: "{{ key }}" #29424620
     wait_timeout: 500
   with_inventory_hostnames:
-    - just_created
+    - master
+    - worker
   register: droplet_info
 - debug:
     var: droplet_info.results 
@@ -27,9 +28,19 @@
     delay: 60
     timeout: 300
   loop: "{{ droplet_info.results }}"
-- name: Add host to group 'just_created' 
+- name: Add host to group 'master' 
   add_host:
     name: '{{ item.data.droplet.name }}'
     ansible_ssh_host: '{{ item.data.ip_address }}'
-    groups: just_created
+    groups: master
+  #when: item.data.droplet.name == "k8s-master"
+  when: item.data.droplet.name.find("master") != -1
+  loop: "{{ droplet_info.results }}"
+- name: Add host to group 'worker' 
+  add_host:
+    name: '{{ item.data.droplet.name }}'
+    ansible_ssh_host: '{{ item.data.ip_address }}'
+    groups: worker
+  #when: item.data.droplet.name != "k8s-master"
+  when: item.data.droplet.name.find("master") == -1
   loop: "{{ droplet_info.results }}"

@@ -15,7 +15,7 @@
         #server: ansible-5
 
 - name: Configure K8s host
-  hosts: just_created
+  hosts: master:worker
   vars:
           #ansible_ssh_user: root
           ### don't work######ansible_ssh_private_key_file: "{{ lookup('file','~/.ssh/id_rsa') }}"

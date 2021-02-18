@@ -1,3 +1,5 @@
-[just_created]
+[master]
 k8s-master
+
+[worker]
 k8s-node1
