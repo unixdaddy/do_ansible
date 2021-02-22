@@ -8,11 +8,6 @@
   loop:
     - br_netfilter
     - overlay
-# disable firewall
-- name: disable UFW
-  ufw:
-    state: disabled
-  ignore_errors: true
 
 # Disable Swap
 - name: disable swap
@@ -30,35 +25,79 @@
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
 
+- name: Ubuntu Specific Changes
+  block:
+  # disable firewall
+  - name: disable UFW
+    ufw:
+      state: disabled
+
 # Add specified repository into sources list using specified filename.
-- apt_repository:
-    repo: deb "{{ item }}" /
-    state: present
-    update_cache: false
-    filename: crio.repo
-  loop:
-    - "{{ LIBCONTAINERS_REPO }}"
-    - "{{ CRIO_REPO }}"
+  - apt_repository:
+      repo: deb "{{ item }}" /
+      state: present
+      update_cache: false
+      filename: crio.repo
+    loop:
+      - "{{ LIBCONTAINERS_REPO }}"
+      - "{{ CRIO_REPO }}"
 
-- name: Add CRIO and K8s apt keys
-  apt_key:
-    url:  "{{ item }}"
-    state: present
-  loop:
-    - "{{ CRIO_REPO }}/Release.key"
-    - "{{ LIBCONTAINERS_REPO }}/Release.key"
-    - "{{ K8S_KEY }}"
-    #- "{{ CRIO_REPO }}cri-o:/{{ CRIO_VERSION }}/{{ OS }}/Release.key"
-    #- "{{ CRIO_REPO }}{{ OS }}/Release.key"
+  - name: Add CRIO and K8s apt keys
+    apt_key:
+      url:  "{{ item }}"
+      state: present
+    loop:
+      - "{{ CRIO_REPO }}/Release.key"
+      - "{{ LIBCONTAINERS_REPO }}/Release.key"
+      - "{{ K8S_KEY }}"
+      #- "{{ CRIO_REPO }}cri-o:/{{ CRIO_VERSION }}/{{ OS }}/Release.key"
+      #- "{{ CRIO_REPO }}{{ OS }}/Release.key"
 
-# Install CRIO packages
-- name: Install CRIO and COMMON packages
-  apt:
-    name: "{{ item }}"  
-    update_cache: true
-  loop:
-    - "{{ CRIO_PACKAGES }}"
-    - "{{ COMMON_PACKAGES }}"
+  # Install CRIO packages
+  - name: Install CRIO and COMMON packages
+    apt:
+      name: "{{ item }}"  
+      update_cache: true
+    loop:
+      - "{{ CRIO_PACKAGES }}"
+      - "{{ COMMON_PACKAGES }}"
+  when: ansible_distribution == "Ubuntu"
+
+- name: RedHat / Centos Specific Changes
+  block:
+  # disable firewall
+  - name: disable firewalld 
+    systemd:
+      name: firewalld
+      enabled: false
+      state: stopped
+
+# Add specified repository into sources list using specified filename.
+  - name: Add Repo
+    get_url:
+      url: "{{ item }}"
+      dest: "{{ CENTOS_REPO_PATH }}/{{ item | basename }}"
+    loop:
+      - "{{ CENTOS_LIBCONTAINERS_REPO }}"
+      - "{{ CENTOS_CRIO_REPO }}"
+
+  # Install CRIO packages
+  - name: Install CRIO and COMMON packages
+    yum:
+      name: "{{ CRIO_PACKAGE }}"
+      update_cache: true
+
+  - name: Create directory for CGROUP file
+    file:
+      state: directory
+      name: "{{ CGROUP_PATH }}"
+
+  - name: Disable SELinux
+    selinux:
+      state: disabled
+
+
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
 # Copy CGROUP File for CRI-O to host
 - name: Copy CGGROUP file to host
@@ -88,18 +127,25 @@
   copy:
     src: "{{ K8S_REPO }}"
     dest: "{{ APT_REPO_PATH}}{{ K8S_REPO }}"
+  when: ansible_distribution == "Ubuntu"
+
+- name: Copy K8s file to host
+  copy:
+    src: "{{ CENTOS_K8S_REPO }}"
+    dest: "{{ CENTOS_REPO_PATH }}{{ CENTOS_K8S_REPO }}"
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
 # Install K8s  packages
 - name: Install K8s packages
-  apt:
+  package:
     name: "{{ item }}"  
-    update_cache: true
   loop:
     - "{{ K8S_PACKAGES }}"
 
 # Prevent K8S from being upgraded.
 - name: Set K8s on hold
   command: apt-mark hold "{{ K8S_PACKAGES }}"
+  when: ansible_distribution == "Ubuntu"
 
 # Restart CRI-O
 - name: Issue daemon-reload and reload CRIO
@@ -158,7 +204,7 @@
 - name: Join K8s workers to Master
   block:
     - name: Join to Master 
-      command: "echo {{ kube_join_command }}"
+      command: "{{ kube_join_command }}"
 
   when: ansible_hostname != "k8s-master"
 
