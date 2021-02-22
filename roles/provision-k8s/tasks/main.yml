@@ -137,10 +137,20 @@
 
 # Install K8s  packages
 - name: Install K8s packages
-  package:
+  yum:
     name: "{{ item }}"  
+    update_cache: true
   loop:
     - "{{ K8S_PACKAGES }}"
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: Install K8s packages
+  apt:
+    name: "{{ item }}"  
+    update_cache: true
+  loop:
+    - "{{ K8S_PACKAGES }}"
+  when: ansible_distribution == "Ubuntu"
 
 # Prevent K8S from being upgraded.
 - name: Set K8s on hold
@@ -154,18 +164,21 @@
     daemon_reload: yes
     name: crio
 
+# check if K8s is installed
+- name: Check if K8s is Installed
+  stat:
+    path: /etc/kubernetes/manifest/kube-scheduler.yaml
+  register: st
+  when: ansible_hostname == "k8s-master"
+
+- debug: 
+    var: st
+
 # Need to install K8S using kubeadm
 - name: Install K8s on Master
   block:
     - name: Install K8s
       command: kubeadm init --apiserver-advertise-address={{ ansible_default_ipv4.address }}
-
-    - name: Generate K8s join command to use on worker nodes
-      command: kubeadm token create --print-join-command
-      register: kube_join_command
-
-    - debug: 
-        var: kube_join_command.stdout_lines
 
     - name: Create a .kube directory if it does not exist
       file:
@@ -199,12 +212,24 @@
 
     - name: Remove Taint from K8s Master
       command: "{{ NO_TAINT }}" 
-  when: ansible_hostname == "k8s-master"
+
+    - name: Generate K8s join command to use on worker nodes
+      command: kubeadm token create --print-join-command
+      register: kube_join_command
+
+  when: (ansible_hostname == "k8s-master") and (st.stat.exists == false)
   #### Need to add joining additional masters lol
+
+- name: Generate K8s join command to use on worker nodes
+  command: kubeadm token create --print-join-command
+  register: kube_join_command
+  when: ansible_hostname == "k8s-master"
+
 - name: Join K8s workers to Master
   block:
-    - name: Join to Master 
-      command: "{{ kube_join_command }}"
+
+    - name: Join worker to K8s-master
+      command: "{{ hostvars[groups['master'][0]]['kube_join_command']['stdout'] }}"
 
   when: ansible_hostname != "k8s-master"
 
