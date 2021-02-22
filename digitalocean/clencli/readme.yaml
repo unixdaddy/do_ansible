@@ -1,0 +1,102 @@
+logo:
+  label: logo
+  url: https://via.placeholder.com/512x90.png
+shields:
+  badges:
+  - description: GitHub issues
+    image: https://img.shields.io/github/issues/unixdaddy/do_ansible
+    url: https://github.com/unixdaddy/do_ansible/issues
+app:
+  name: DigitalOcean Ansible GIT repo
+  function: Used to test deploying to DigitalOcean with Ansible Engine and Tower
+  id: 1
+screenshots:
+- caption: How to build
+  label: how-to-build
+  url: https://via.placeholder.com/512x256.png
+- caption: How to run
+  label: how-to-run
+  url: https://via.placeholder.com/512x256.png
+usage: |-
+  Run module-role playbook which will use the Ansible DigitalOcean modules that are a part of Ansible Engine - uses vault file with DigitalOcean OAUTH Token
+  ```
+  $ ansible-playbook module-role.yml -i hosts --ask-vault-pass
+  ```
+  The main.yml in the deploy-using-module role
+  ```
+  # tasks file for roles/deploy-using-module
+  - name: ensure a droplet is present
+    digital_ocean_droplet: <-- MODULE USED IS STANDARD ANSIBLE
+      state: "{{ state }}" #present
+      name: "{{ item }}" <-- NAMES FROM INVENTORY IN LOOP
+      oauth_token: "{{ token }}"
+      size: "{{ size }} " #s-1vcpu-1gb
+      region: "{{ region }}" #lon1
+      image: "{{ image }} " #ubuntu-16-04-x64
+      ssh_keys: "{{ key }}" #29424620
+      wait_timeout: 500
+    with_inventory_hostnames:
+      - server <-- USES GROUP TO BUILD VMs IN A LOOP
+    register: droplet_info
+  - debug:
+      var: droplet_info
+
+  ```
+  Run collection-role playbook which will use the modules/plugins in the Ansible DigitalOcean collection from galaxy.ansible.com - uses vault file with DigitalOcean OAUTH Token
+  ```
+  $ ansible-playbook collection-role.yml -i hosts --ask-vault-pass <---  Builds VMs with these names
+  ```
+  The main.yml in the deploy-using-collection role
+  ```
+  - name: ensure a droplet is present
+    community.digitalocean.digital_ocean_droplet: <-- COLLECTION MODULE IS USED
+      state: "{{ state }}" #present
+      name: "{{ item }}" <-- NAMES FROM INVENTORY IN LOOP
+      oauth_token: "{{ token }}"
+      size: "{{ size }} " #s-1vcpu-1gb
+      region: "{{ region }}" #lon1
+      image: "{{ image }} " #ubuntu-16-04-x64
+      ssh_keys: "{{ key }}" #29424620
+      wait_timeout: 500
+    with_inventory_hostnames:
+      - server <-- USES GROUP TO BUILD VMs IN A LOOP
+    register: droplet_info
+  - debug:
+      var: droplet_info
+
+  ```
+  The collection-tower playbook uses the same collection as collection-role.yml but small changes for use in tower. The DigitalOcean OAUTH token is stored in Tower credential and only a single VM is built
+
+  The do-deploy-k8s playbook deploys DigitalOcean droplet and then provisions the required number of K8s master and worker nodes - uses ENV variable to store DigitalOcean OAUTH Token
+  ```
+  $ ansible-playbook  do-deploy-k8s.yml -i k8s-hosts <---  Builds VMs with these names
+  ```
+prerequisites:
+- description: Configuration Management and more
+  name: Ansible Engine
+  url: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+- description: DigitalOcean Collection used for Ansible to interact with DigitalOcean Platform
+  name: DigitalOcean Ansible Collection
+  url: https://galaxy.ansible.com/community/digitalocean
+installing: |-
+  for Ansible - use your package manager of choice OR pip
+  ```
+  $ pip install ansible
+  ```
+  for DigitalOcean Collection - use requirements file ./collections/requirements.yml and ansible-galaxy command. Note: Tower will do this automatically
+  ```
+  $ ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections
+  ```
+contributors:
+- name: daddy, unix
+  role: learning
+  email: withheld
+acknowledgments:
+- name: Whocamebeforeme, All
+  role: everything
+references:
+- description: Cloud Engineer CLI
+  name: clencli
+  url: https://github.com/awslabs/clencli
+license: This project is licensed under the Apache License 2.0.
+copyright: Company, Inc. or its affiliates. All Rights Reserved.
