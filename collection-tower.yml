@@ -5,6 +5,8 @@
     - community.digitalocean
 
   roles:
+    # this main.yml in this roles task folder can be altered to use the standard module
+    # rather than a collection
     - role: deploy-using-tower
       vars:
         image: ubuntu-20-10-x64
