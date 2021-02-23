@@ -142,6 +142,14 @@
     update_cache: true
   loop:
     - "{{ K8S_PACKAGES }}"
+
+- name: Start and Enable kubelet
+  systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: yes
+    name: kubelet
+
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
 - name: Install K8s packages
@@ -167,12 +175,9 @@
 # check if K8s is installed
 - name: Check if K8s is Installed
   stat:
-    path: /etc/kubernetes/manifest/kube-scheduler.yaml
+    #path: /etc/kubernetes/manifests/kube-scheduler.yaml
+    path: /etc/kubernetes/kubelet.conf
   register: st
-  when: ansible_hostname == "k8s-master"
-
-- debug: 
-    var: st
 
 # Need to install K8S using kubeadm
 - name: Install K8s on Master
@@ -218,27 +223,24 @@
       register: kube_join_command
 
   when: (ansible_hostname == "k8s-master") and (st.stat.exists == false)
+
   #### Need to add joining additional masters lol
-
-- name: Generate K8s join command to use on worker nodes
-  command: kubeadm token create --print-join-command
-  register: kube_join_command
-  when: ansible_hostname == "k8s-master"
-
 - name: Join K8s workers to Master
   block:
+
+    #- debug:
+    #     var:  hostvars[groups['master'][0]]['kube_join_command']['stdout'] 
 
     - name: Join worker to K8s-master
       command: "{{ hostvars[groups['master'][0]]['kube_join_command']['stdout'] }}"
 
-  when: ansible_hostname != "k8s-master"
+  when: (ansible_hostname != "k8s-master") and (st.stat.exists == false)
 
 - name: Update registery file
   replace:
     path: /etc/crio/crio.conf
     regexp: '^#registries = \['
     replace: 'registries = [ "docker.io", "quay.io", "registry.fedoraproject.org", "registry.opensuse.org" ]'
-    # "path=/etc/crio/crio.conf regexp='^#registries = \[' replace='registries = [ \"docker.io\", \"quay.io\", \"registry.fedoraproject.org\", \"registry.opensuse.org\" ]'"
 
 # Restart CRI-O
 - name: Issue daemon-reload and reload CRIO
