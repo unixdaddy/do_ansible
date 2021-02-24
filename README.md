@@ -47,13 +47,9 @@ Used to test deploying to DigitalOcean with Ansible Engine and Tower
   <summary>Expand</summary>
 
 
-| ![how-to-configure](clencli/termtosvg/ansible-tower.svg) |
+| ![Deploying-to-Digital-Ocean](clencli/termtosvg/ansible-tower.svg) |
 |:--:| 
-| *How to configure* |
-
-| ![how-to-run](https://via.placeholder.com/512x256.png) |
-|:--:| 
-| *How to run* |
+| *Deploying K8s Master and 1 worker node to Digital Ocean* |
 
 </details>
 
@@ -64,14 +60,14 @@ Used to test deploying to DigitalOcean with Ansible Engine and Tower
 <details open>
   <summary>Expand</summary>
 
-**Enviornment Details (Not all are used for this Repo)**
+**Environment Details (Not all are used for this Repo)**
 
 *My local environment consists of*
 1. Ansible Engine 2.9 /Tower 2.8.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 5GB Memory and 30GB Disk Space)
 2. K8s 1.20 Master RHEL 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
 3. K8s 1.20 Worker RHEL 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
-4. Ansible Automation Hub 1.2.1 RHEL 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
-5. Ansible Automation Hub 1.2.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
+4. Ansible Automation Hub 1.2.1 RHEL 8.3 (VirtualBox - 2vCPU, 5GB Memory and 30GB Disk Space)
+5. Ansible Automation Hub 1.2.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 5GB Memory and 30GB Disk Space)
 6. OpenSuSe Leap 15.2 (WSL)
 7. Ubuntu 20.04 LTS (WSL)
 
@@ -86,7 +82,7 @@ To interact with these environments I am using
 - Github
 
 
-**End of Enviornment Details (Not all are used for this Repo)**
+**End of Environment Details (Not all are used for this Repo)**
 
 
 **This Repo's Purpose**
@@ -119,6 +115,8 @@ The focus will be on the last 2 playbooks
 *Set your DigitalOcean Token as an environment variable - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
 
 *Install DigitalOcean Collection - see installing section*
+
+*Clone this repo - see installing section*
 
 
 Run do-deploy-k8s playbook which deploys DigitalOcean droplet(s) and then provisions them as a K8s master or as worker nodes
@@ -203,14 +201,14 @@ for Ansible - use your package manager of choice OR pip
 ```
 $ pip install ansible
 ```
-for DigitalOcean Collection - use requirements file ./collections/requirements.yml and ansible-galaxy command. Note: Tower will do this automatically
-```
-$ ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections
-```
 Clone this Repo
 ```
 $ git clone git@github.com:unixdaddy/do_ansible.git
-cd do_ansible.git
+$ cd do_ansible.git
+```
+for DigitalOcean Collection - use requirements file ./collections/requirements.yml and ansible-galaxy command. Note: Tower will do this automatically
+```
+$ ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections
 ```
 </details>
 

@@ -71,7 +71,7 @@ usage: |-
 
   *Install DigitalOcean Collection - see installing section*
 
-  *Clone this repo - see installing section* 
+  *Clone this repo - see installing section*
 
 
   Run do-deploy-k8s playbook which deploys DigitalOcean droplet(s) and then provisions them as a K8s master or as worker nodes
