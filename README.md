@@ -12,7 +12,7 @@
 -->
 
 
-![Photo by [Markus Spiske](https://unsplash.com/photos/Skf7HxARcoc) on [Unsplash](https://unsplash.com)](clencli/logo.jpeg)
+![Photo by [Markus Spiske](https://unsplash.com/photos/Skf7HxARcoc) on [Unsplash](https://unsplash.com)](digitalocean/clencli/logo.jpeg)
 
 > Photo by [Markus Spiske](https://unsplash.com/photos/Skf7HxARcoc) on [Unsplash](https://unsplash.com)
 
@@ -47,7 +47,7 @@ Used to test deploying to DigitalOcean with Ansible Engine and Tower
   <summary>Expand</summary>
 
 
-| ![how-to-configure](clencli/termtosvg/ansible-tower.svg) |
+| ![how-to-configure](digitalocean/clencli/termtosvg/ansible-tower.svg) |
 |:--:| 
 | *How to configure* |
 
