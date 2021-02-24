@@ -7,9 +7,9 @@ shields:
     image: https://img.shields.io/github/issues/unixdaddy/do_ansible
     url: https://github.com/unixdaddy/do_ansible/issues
 app:
-  name: DigitalOcean Ansible GIT repo
+  name: DigitalOcean Ansible Repo
   function: Used to test deploying to DigitalOcean with Ansible Engine and Tower
-  id: 1
+  id: Ansible
 screenshots:
 - caption: How to build
   label: how-to-build
@@ -18,59 +18,119 @@ screenshots:
   label: how-to-run
   url: https://via.placeholder.com/512x256.png
 usage: |-
-  Run module-role playbook which will use the Ansible DigitalOcean modules that are a part of Ansible Engine - uses vault file with DigitalOcean OAUTH Token
-  ```
-  $ ansible-playbook module-role.yml -i hosts --ask-vault-pass
-  ```
-  The main.yml in the deploy-using-module role
-  ```
-  # tasks file for roles/deploy-using-module
-  - name: ensure a droplet is present
-    digital_ocean_droplet: <-- MODULE USED IS STANDARD ANSIBLE
-      state: "{{ state }}" #present
-      name: "{{ item }}" <-- NAMES FROM INVENTORY IN LOOP
-      oauth_token: "{{ token }}"
-      size: "{{ size }} " #s-1vcpu-1gb
-      region: "{{ region }}" #lon1
-      image: "{{ image }} " #ubuntu-16-04-x64
-      ssh_keys: "{{ key }}" #29424620
-      wait_timeout: 500
-    with_inventory_hostnames:
-      - server <-- USES GROUP TO BUILD VMs IN A LOOP
-    register: droplet_info
-  - debug:
-      var: droplet_info
+  **Enviornment Details (Not all are used for this Repo)**
 
-  ```
-  Run collection-role playbook which will use the modules/plugins in the Ansible DigitalOcean collection from galaxy.ansible.com - uses vault file with DigitalOcean OAUTH Token
-  ```
-  $ ansible-playbook collection-role.yml -i hosts --ask-vault-pass <---  Builds VMs with these names
-  ```
-  The main.yml in the deploy-using-collection role
-  ```
-  - name: ensure a droplet is present
-    community.digitalocean.digital_ocean_droplet: <-- COLLECTION MODULE IS USED
-      state: "{{ state }}" #present
-      name: "{{ item }}" <-- NAMES FROM INVENTORY IN LOOP
-      oauth_token: "{{ token }}"
-      size: "{{ size }} " #s-1vcpu-1gb
-      region: "{{ region }}" #lon1
-      image: "{{ image }} " #ubuntu-16-04-x64
-      ssh_keys: "{{ key }}" #29424620
-      wait_timeout: 500
-    with_inventory_hostnames:
-      - server <-- USES GROUP TO BUILD VMs IN A LOOP
-    register: droplet_info
-  - debug:
-      var: droplet_info
+  *My local environment consists of*
+  1. Ansible Engine 2.9 /Tower 2.8.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 5GB Memory and 30GB Disk Space)
+  2. K8s 1.20 Master RHEL 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
+  3. K8s 1.20 Worker RHEL 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
+  4. Ansible Automation Hub 1.2.1 RHEL 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
+  5. Ansible Automation Hub 1.2.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 2GB Memory and 30GB Disk Space)
+  6. OpenSuSe Leap 15.2 (WSL)
+  7. Ubuntu 20.04 LTS (WSL)
 
-  ```
-  The collection-tower playbook uses the same collection as collection-role.yml but small changes for use in tower. The DigitalOcean OAUTH token is stored in Tower credential and only a single VM is built
+  *My Cloud environment consists of*
+  1. DigitalOcean Droplets - varied number, varied sizes of Ubuntu 20.04/20.10 and Centos 8.3
 
-  The do-deploy-k8s playbook deploys DigitalOcean droplet and then provisions the required number of K8s master and worker nodes - uses ENV variable to store DigitalOcean OAUTH Token
+  To interact with these environments I am using
+
+  - vscode studio code
+  - mobaxterm
+  - notepad++
+  - Github
+
+
+  **End of Enviornment Details (Not all are used for this Repo)**
+
+
+  **This Repo's Purpose**
+
+  *The idea of this Repo is for ME to walkthough the process of creating a playbook and then refactoring the playbook tidying up format, using different techniques etc... to learn more. There will be a branch for different phases of refactoring*
+
+  **Most of the parameters are set in either the playbook OR role/<role-name>/defaults/main.yml - THIS WILL BE CHANGED AS I GO THROUGH REFACTORING**
+
+  *The main branch will be a merge of the last working branch of refactoring*
+
+  **THE PRESENT MERGED BRANCH IS TBC**
+
+  This repo uses the following from **MY** environment
+  1. Ansible Engine /  Ansible Tower VM (Local)
+  2. K8s Master / Worker (Local)
+  3. DigitalOcean Droplets - Ubuntu 20.04/20.10 and Centos 8.3 (Cloud)
+
+  The playbooks aim is to deploy K8s environment - 1 Master and X number of workers locally (pre-provisioned VMs in Virtualbox) and in the cloud to DigitalOcean (provisioning the droplets in the process).
+
+  There are 4 playbooks in the repo
+  - module-role.yml - uses a role to deploy a droplet on Digital Ocean (ansible-engine digitalocean module)
+  - collection-tower.yml - uses a role to deploy a droplet on Digital Ocean (community.digitalocean collection)
+  - do-deploy-k8s.yml - uses a role to deploy X number of droplets on Digital Ocean and provision K8s (Centos/Redhat/Ubuntu) (community.digitalocean collection)
+  - deploy-k8s.yml - uses a role to provision K8s on pre-provisioned VMs (Centos/Redhat/Ubuntu) (community.digitalocean collection)
+
+  The focus will be on the last 2 playbooks
+
+  **How To Use**
+
+  *Set your DigitalOcean Token as an environment variable - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
+
+  *Install DigitalOcean Collection - see installing section*
+
+
+  Run do-deploy-k8s playbook which deploys DigitalOcean droplet(s) and then provisions them as a K8s master or as worker nodes
+  using 2 roles - 1 to provision digitalocean droplet(s) and 1 to provision K8s on the droplet(s)
   ```
-  $ ansible-playbook  do-deploy-k8s.yml -i k8s-hosts <---  Builds VMs with these names
+  $ ansible-playbook  do-deploy-k8s.yml -i k8s-hosts <---  Builds VMs with these names in the specified groups
   ```
+  The main.yml in digitalocean-deploy role will in addition to deploying the droplets add them to the correct groups - master or worker (code snippet below)
+  ```
+  - name: Add host to group 'master'
+    add_host:
+      name: '{{ item.data.droplet.name }}'
+      ansible_ssh_host: '{{ item.data.ip_address }}'
+      groups: master
+    when: item.data.droplet.name.find("master") != -1
+    loop: "{{ droplet_info.results }}"
+  - name: Add host to group 'worker'
+    add_host:
+      name: '{{ item.data.droplet.name }}'
+      ansible_ssh_host: '{{ item.data.ip_address }}'
+      groups: worker
+    when: item.data.droplet.name.find("master") == -1
+    loop: "{{ droplet_info.results }}"
+  ```
+  In the main.yml for provision-k8s role the droplets will be provisioned either as a master or worker depending on what group they have been added to.
+  Then once the master and worker(s) are configured the worker(s) will be joined to the master (code snippet below).
+  ```
+  - name: Join K8s workers to Master
+    block:
+
+      - name: Join worker to K8s-master
+        command: "{{ hostvars[groups['master'][0]]['kube_join_command']['stdout'] }}"
+
+    when: (ansible_hostname != "k8s-master") and (st.stat.exists == false)
+  ```
+
+  Run deploy-k8s playbook which provisions the required number of K8s master and worker nodes to **existing** VMs
+  using 1 role to provision K8s on the VMs. It uses the same role as for this as do-deploy-k8s.yml - provision-k8s.
+  ```
+  $ ansible-playbook deploy-k8s.yml -i k8s-local <---  Builds VMs with these names in the specified groups
+  ```
+
+  **Additional Comments**
+
+  - K8s environment is provisioned with CRI-O (not docker)
+  - K8s environment is provisioned with CILIUM CNI (you can choose something else - CALICO)
+  - DigitalOcean community collection is used - collections are the future
+  - ansible.cfg in the project will define collection path - please install collections (see below) before running playbooks
+
+  **Ansible Tower**
+  These playbooks will work in Tower if it has been configured correctly
+  - project - this repo pulled into Ansible Tower (Tower will automatically pull in DigitalOcean Collection via requirements file)
+  - credential - New Type for Digital Ocean Token - set as env (injector configuration)
+  - credential - Machine credential to connect to the new machines - ssh key
+  - Inventory - inventory configured with groups/hosts - use source from project to use K8s-host or K8-local inventories
+
+    more will be added on this section later
+
 prerequisites:
 - description: Configuration Management and more
   name: Ansible Engine
@@ -78,6 +138,12 @@ prerequisites:
 - description: DigitalOcean Collection used for Ansible to interact with DigitalOcean Platform
   name: DigitalOcean Ansible Collection
   url: https://galaxy.ansible.com/community/digitalocean
+- description: Knowledge of Kubernetes for container orchestration
+  name: Kubernetes Production Environment
+  url: https://kubernetes.io/docs/setup/
+- description: Knowledge of Cilium CNI - network connectivity between apps and containers
+  name: Cilium CNI
+  url: https://kubernetes.io/docs/setup/
 installing: |-
   for Ansible - use your package manager of choice OR pip
   ```
@@ -87,12 +153,17 @@ installing: |-
   ```
   $ ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections
   ```
+  Clone this Repo
+  ```
+  $ git clone git@github.com:unixdaddy/do_ansible.git
+  cd do_ansible.git
+  ```
 contributors:
 - name: daddy, unix
   role: learning
   email: withheld
 acknowledgments:
-- name: Whocamebeforeme, All
+- name: All, Who-Came-Before-Me
   role: everything
 references:
 - description: Cloud Engineer CLI
