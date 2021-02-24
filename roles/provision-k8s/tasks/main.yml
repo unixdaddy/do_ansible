@@ -123,13 +123,13 @@
     - "{{ CRITEST_PACKAGE }}"
 
 # Copy K8s repo file to host 
-- name: Copy K8s file to host
+- name: Copy K8s file to host - Ubuntu
   copy:
     src: "{{ K8S_REPO }}"
     dest: "{{ APT_REPO_PATH}}{{ K8S_REPO }}"
   when: ansible_distribution == "Ubuntu"
 
-- name: Copy K8s file to host
+- name: Copy K8s file to host - CentOS/RedHat
   copy:
     src: "{{ CENTOS_K8S_REPO }}"
     dest: "{{ CENTOS_REPO_PATH }}{{ CENTOS_K8S_REPO }}"

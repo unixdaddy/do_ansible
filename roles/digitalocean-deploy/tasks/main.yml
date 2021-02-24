@@ -17,7 +17,7 @@
   register: droplet_info
 - debug:
     var: droplet_info.results 
-- name: Wait for port 22 to become open on the host, don't start checking for 60 seconds
+- name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
   # both wait_for and wait_for_connection work with the right delay/timeout
   #wait_for_connection:
   #  delay: 60
@@ -25,7 +25,7 @@
   wait_for:
     host: "{{ item.data.ip_address }}"
     port: 22
-    delay: 60
+    delay: 30
     timeout: 300
   loop: "{{ droplet_info.results }}"
 - name: Add host to group 'master' 
