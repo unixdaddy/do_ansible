@@ -11,9 +11,9 @@ app:
   function: Used to test deploying to DigitalOcean with Ansible Engine and Tower
   id: Ansible
 screenshots:
-- caption: How to build
-  label: how-to-build
-  url: https://via.placeholder.com/512x256.png
+- caption: How to configure
+  label: how-to-configure
+  url: clencli/termtosvg/ansible-tower.svg
 - caption: How to run
   label: how-to-run
   url: https://via.placeholder.com/512x256.png

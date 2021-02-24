@@ -47,9 +47,9 @@ Used to test deploying to DigitalOcean with Ansible Engine and Tower
   <summary>Expand</summary>
 
 
-| ![how-to-build](https://via.placeholder.com/512x256.png) |
+| ![how-to-configure](clencli/termtosvg/ansible-tower.svg) |
 |:--:| 
-| *How to build* |
+| *How to configure* |
 
 | ![how-to-run](https://via.placeholder.com/512x256.png) |
 |:--:| 
