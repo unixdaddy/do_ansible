@@ -12,9 +12,9 @@
 -->
 
 
-![logo](https://via.placeholder.com/512x90.png)
+![Photo by [Markus Spiske](https://unsplash.com/photos/Skf7HxARcoc) on [Unsplash](https://unsplash.com)](clencli/logo.jpeg)
 
-> logo
+> Photo by [Markus Spiske](https://unsplash.com/photos/Skf7HxARcoc) on [Unsplash](https://unsplash.com)
 
 
 [![GitHub issues](https://img.shields.io/github/issues/unixdaddy/do_ansible)](https://github.com/unixdaddy/do_ansible/issues)
@@ -47,9 +47,9 @@ Used to test deploying to DigitalOcean with Ansible Engine and Tower
   <summary>Expand</summary>
 
 
-| ![how-to-build](https://via.placeholder.com/512x256.png) |
+| ![how-to-configure](clencli/termtosvg/ansible-tower.svg) |
 |:--:| 
-| *How to build* |
+| *How to configure* |
 
 | ![how-to-run](https://via.placeholder.com/512x256.png) |
 |:--:| 
@@ -156,7 +156,7 @@ Then once the master and worker(s) are configured the worker(s) will be joined t
 ```
 
 Run deploy-k8s playbook which provisions the required number of K8s master and worker nodes to **existing** VMs
-using 1 role to provision K8s on the VMs. It uses the same role as for this as do-deploy-k8s.yml - provision-k8s.
+using 1 role to provision K8s on the VMs. It uses the same role to do this as do-deploy-k8s.yml - provision-k8s.
 ```
 $ ansible-playbook deploy-k8s.yml -i k8s-local <---  Builds VMs with these names in the specified groups
 ```
