@@ -217,7 +217,9 @@ $ ansible-galaxy collection install -r ./collections/requirements.yml -p ./colle
 
 
 
-**__Environment Details (Not all are used for this Repo)__**
+##Environment Details (Not all are used for this Repo)##
+
+This Section is useful because it provides insight into the tools and environment being used
 
 *My local environment consists of*
 1. Ansible Engine 2.9 /Tower 2.8.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 5GB Memory and 30GB Disk Space)

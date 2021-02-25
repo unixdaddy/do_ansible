@@ -14,8 +14,6 @@ screenshots:
 - caption: Deploying K8s Master and 1 worker node to DigitalOcean
   label: Deploying-to-Digital-Ocean
   url: clencli/termtosvg/ansible-tower.svg
-include:
-  - Environment.md
 usage: |-
 
   **__This Repo's Purpose__**
@@ -156,6 +154,8 @@ installing: |-
   ```
   $ ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections
   ```
+include:
+  - Environment.md
 contributors:
 - name: daddy, unix
   role: learning
