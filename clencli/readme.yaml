@@ -14,9 +14,9 @@ screenshots:
 - caption: Deploying K8s Master and 1 worker node to DigitalOcean
   label: Deploying-to-Digital-Ocean
   url: clencli/termtosvg/ansible-tower.svg
-usage: |-
-  include:
+include:
   - Environment.md
+usage: |-
 
   **__This Repo's Purpose__**
 
