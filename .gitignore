@@ -416,6 +416,7 @@ $RECYCLE.BIN/
 
 # CLENCLI Files
 clencli/log.jsoncollections/*
+collections/*
 !collections/requirements.yml
 do-droplet-create.txt
 do-droplet-delete.txt
