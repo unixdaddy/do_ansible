@@ -90,7 +90,7 @@ There are 4 playbooks in the repo
 
 The focus will be on the last 2 playbooks
 
-**__How To Use___**
+**__How To Use__**
 
 *Set your DigitalOcean Token as an environment variable
  - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
@@ -208,6 +208,12 @@ for DigitalOcean Collection - use requirements file ./collections/requirements.y
 ```
 $ ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections
 ```
+
+You will also need to have setup the following:-
+- user on target system (or use root)
+  - privilege escalation will be required if not using root
+- ssh key authentication - as part of deploying on DigitalOcean I have set public keys to be inserted
+- set required variables in playbook or defaults/main.yml of role i.e. set region to nyc1 or image to centos-7-x64 or size to s-2vcpu-4gb etc..
 </details>
 
 
