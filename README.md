@@ -69,7 +69,7 @@ Used to test Ansible Engine/Tower and playbook refactoring - locally and in the 
 
 *The main branch will be a merge of the last working branch of refactoring*
 
-**THE PRESENT MERGED BRANCH IS TBC**
+**THE PRESENT MERGED BRANCH IS INITIAL**
 
 This repo uses the following from **MY** environment
 1. Ansible Engine /  Ansible Tower VM (Local)
