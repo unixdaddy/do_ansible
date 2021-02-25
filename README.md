@@ -92,7 +92,7 @@ The focus will be on the last 2 playbooks
 
 **__How To Use__**
 
-*Set your DigitalOcean Token as an environment variable
+*Set your DigitalOcean Token as an environment variable*
  - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
 
 *Install DigitalOcean Collection - see installing section*
@@ -214,6 +214,7 @@ You will also need to have setup the following:-
   - privilege escalation will be required if not using root
 - ssh key authentication - as part of deploying on DigitalOcean I have set public keys to be inserted
 - set required variables in playbook or defaults/main.yml of role i.e. set region to nyc1 or image to centos-7-x64 or size to s-2vcpu-4gb etc..
+- for existing VMs you will need to update K8s-local to point to the IPs/DNS Names of those machines.
 </details>
 
 
