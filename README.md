@@ -60,7 +60,7 @@ Used to test Ansible Engine/Tower and playbook refactoring - locally and in the 
 <details open>
   <summary>Expand</summary>
 
-**_Environment Details (Not all are used for this Repo)_**
+**__Environment Details (Not all are used for this Repo)__**
 
 *My local environment consists of*
 1. Ansible Engine 2.9 /Tower 2.8.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 5GB Memory and 30GB Disk Space)
@@ -85,7 +85,7 @@ To interact with these environments I am using
 **End of Environment Details (Not all are used for this Repo)**
 
 
-**_This Repo's Purpose_**
+**__This Repo's Purpose__**
 
 *The idea of this Repo is for ME to walkthough the process of creating a playbook and then refactoring the playbook tidying up format, using different techniques etc... to learn more. There will be a branch for different phases of refactoring*
 
@@ -114,7 +114,7 @@ There are 4 playbooks in the repo
 
 The focus will be on the last 2 playbooks
 
-**_How To Use_**
+**__How To Use___**
 
 *Set your DigitalOcean Token as an environment variable - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
 
@@ -178,7 +178,7 @@ k8s-node1 ansible_host=192.168.0.105
 $ ansible-playbook deploy-k8s.yml -i k8s-local <---  Builds VMs with these names in the specified groups
 ```
 
-**_Additional Comments_**
+**__Additional Comments__**
 
 - K8s environment is provisioned with CRI-O (not docker)
 - K8s environment is provisioned with CILIUM CNI (you can choose something else - CALICO)
@@ -186,7 +186,7 @@ $ ansible-playbook deploy-k8s.yml -i k8s-local <---  Builds VMs with these names
 - ansible.cfg in the project will define collection path - please install collections (see below) before running playbooks
 - presently doesn't use **become** in the playbooks - connects as root. Refactoring will create/use a user with sudo
 
-**_Ansible Tower_**
+**__Ansible Tower__**
 
 These playbooks will work in Tower if it has been configured correctly
 - project - this repo pulled into Ansible Tower (Tower will automatically pull in DigitalOcean Collection via requirements file)
