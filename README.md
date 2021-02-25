@@ -65,7 +65,7 @@ Used to test Ansible Engine/Tower and playbook refactoring - locally and in the 
 
 *The idea of this Repo is for ME to walkthough the process of creating a playbook and then refactoring the playbook tidying up format, using different techniques etc... to learn more. There will be a branch for different phases of refactoring*
 
-**Most of the parameters are set in either the playbook OR role/\<role-namei\>/defaults/main.yml - THIS WILL BE CHANGED AS I GO THROUGH REFACTORING**
+**Most of the parameters are set in either the playbook OR role/\<role-name\>/defaults/main.yml - THIS WILL BE CHANGED AS I GO THROUGH REFACTORING**
 
 *The main branch will be a merge of the last working branch of refactoring*
 
@@ -92,7 +92,8 @@ The focus will be on the last 2 playbooks
 
 **__How To Use___**
 
-*Set your DigitalOcean Token as an environment variable - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
+*Set your DigitalOcean Token as an environment variable
+ - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
 
 *Install DigitalOcean Collection - see installing section*
 
@@ -217,7 +218,7 @@ $ ansible-galaxy collection install -r ./collections/requirements.yml -p ./colle
 
 
 
-##Environment Details (Not all are used for this Repo)##
+Environment Details (Not all are used for this Repo)
 ---
 
 This Section is useful because it provides insight into the tools and environment being used
