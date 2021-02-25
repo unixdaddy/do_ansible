@@ -21,7 +21,7 @@
 
 # DigitalOcean Ansible Repo  ( Ansible ) 
 
-Used to test deploying to DigitalOcean with Ansible Engine and Tower
+Used to test Ansible Engine/Tower and playbook refactoring - locally and in the cloud
 
 ## Table of Contents
 ---
@@ -49,7 +49,7 @@ Used to test deploying to DigitalOcean with Ansible Engine and Tower
 
 | ![Deploying-to-Digital-Ocean](clencli/termtosvg/ansible-tower.svg) |
 |:--:| 
-| *Deploying K8s Master and 1 worker node to Digital Ocean* |
+| *Deploying K8s Master and 1 worker node to DigitalOcean* |
 
 </details>
 
@@ -60,7 +60,7 @@ Used to test deploying to DigitalOcean with Ansible Engine and Tower
 <details open>
   <summary>Expand</summary>
 
-**Environment Details (Not all are used for this Repo)**
+**_Environment Details (Not all are used for this Repo)_**
 
 *My local environment consists of*
 1. Ansible Engine 2.9 /Tower 2.8.1 Centos Stream 8.3 (VirtualBox - 2vCPU, 5GB Memory and 30GB Disk Space)
@@ -85,11 +85,11 @@ To interact with these environments I am using
 **End of Environment Details (Not all are used for this Repo)**
 
 
-**This Repo's Purpose**
+**_This Repo's Purpose_**
 
 *The idea of this Repo is for ME to walkthough the process of creating a playbook and then refactoring the playbook tidying up format, using different techniques etc... to learn more. There will be a branch for different phases of refactoring*
 
-**Most of the parameters are set in either the playbook OR role/<role-name>/defaults/main.yml - THIS WILL BE CHANGED AS I GO THROUGH REFACTORING**
+**Most of the parameters are set in either the playbook OR role/\<role-namei\>/defaults/main.yml - THIS WILL BE CHANGED AS I GO THROUGH REFACTORING**
 
 *The main branch will be a merge of the last working branch of refactoring*
 
@@ -100,17 +100,21 @@ This repo uses the following from **MY** environment
 2. K8s Master / Worker (Local)
 3. DigitalOcean Droplets - Ubuntu 20.04/20.10 and Centos 8.3 (Cloud)
 
-The playbooks aim is to deploy K8s environment - 1 Master and X number of workers locally (pre-provisioned VMs in Virtualbox) and in the cloud to DigitalOcean (provisioning the droplets in the process).
+The playbooks aim is to deploy K8s environment - 1 Master and X number of workers either locally (on existing VMs in Virtualbox) or in the cloud to DigitalOcean (provisioning the droplets in the process).
 
 There are 4 playbooks in the repo
-- module-role.yml - uses a role to deploy a droplet on Digital Ocean (ansible-engine digitalocean module)
-- collection-tower.yml - uses a role to deploy a droplet on Digital Ocean (community.digitalocean collection)
-- do-deploy-k8s.yml - uses a role to deploy X number of droplets on Digital Ocean and provision K8s (Centos/Redhat/Ubuntu) (community.digitalocean collection)
+- module-role.yml - uses a role to deploy a droplet on DigitalOcean (ansible-engine digitalocean module)
+  - used for basic testing of deploying droplets on DigitalOcean
+- collection-tower.yml - uses a role to deploy a droplet on DigitalOcean (community.digitalocean collection)
+  - used for basic testing of deploying droplets on DigitalOcean
+- do-deploy-k8s.yml - uses a role to deploy X number of droplets on DigitalOcean and provision K8s (Centos/Redhat/Ubuntu) (community.digitalocean collection)
+  - used for deploying droplets on DigitalOcean and then provisioning K8s master/worker nodes
 - deploy-k8s.yml - uses a role to provision K8s on pre-provisioned VMs (Centos/Redhat/Ubuntu) (community.digitalocean collection)
+  - used for provisioning K8s master/worker nodes on existing VMs
 
 The focus will be on the last 2 playbooks
 
-**How To Use**
+**_How To Use_**
 
 *Set your DigitalOcean Token as an environment variable - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
 
@@ -122,6 +126,14 @@ The focus will be on the last 2 playbooks
 Run do-deploy-k8s playbook which deploys DigitalOcean droplet(s) and then provisions them as a K8s master or as worker nodes
 using 2 roles - 1 to provision digitalocean droplet(s) and 1 to provision K8s on the droplet(s)
 ```
+$ more k8-hosts
+[master]
+k8s-master
+
+[worker]
+k8s-node1
+k8s-node2
+
 $ ansible-playbook  do-deploy-k8s.yml -i k8s-hosts <---  Builds VMs with these names in the specified groups
 ```
 The main.yml in digitalocean-deploy role will in addition to deploying the droplets add them to the correct groups - master or worker (code snippet below)
@@ -156,20 +168,29 @@ Then once the master and worker(s) are configured the worker(s) will be joined t
 Run deploy-k8s playbook which provisions the required number of K8s master and worker nodes to **existing** VMs
 using 1 role to provision K8s on the VMs. It uses the same role to do this as do-deploy-k8s.yml - provision-k8s.
 ```
+$ more k8-local
+[master]
+k8s-master ansible_host=192.168.0.104
+
+[worker]
+k8s-node1 ansible_host=192.168.0.105
+
 $ ansible-playbook deploy-k8s.yml -i k8s-local <---  Builds VMs with these names in the specified groups
 ```
 
-**Additional Comments**
+**_Additional Comments_**
 
 - K8s environment is provisioned with CRI-O (not docker)
 - K8s environment is provisioned with CILIUM CNI (you can choose something else - CALICO)
 - DigitalOcean community collection is used - collections are the future
 - ansible.cfg in the project will define collection path - please install collections (see below) before running playbooks
+- presently doesn't use **become** playbooks - connects as root. Refactoring will create/use a user with sudo
 
-**Ansible Tower**
+**_Ansible Tower_**
+
 These playbooks will work in Tower if it has been configured correctly
 - project - this repo pulled into Ansible Tower (Tower will automatically pull in DigitalOcean Collection via requirements file)
-- credential - New Type for Digital Ocean Token - set as env (injector configuration)
+- credential - New Type for DigitalOcean Token - set as env (injector configuration)
 - credential - Machine credential to connect to the new machines - ssh key
 - Inventory - inventory configured with groups/hosts - use source from project to use K8s-host or K8-local inventories
 
@@ -252,6 +273,7 @@ Gratitude for assistance:
   <summary>Expand</summary>
 
   * [clencli](https://github.com/awslabs/clencli) - Cloud Engineer CLI
+  * [termtosvg](https://github.com/nbedos/termtosvg) - Used to record terminal output
 
 
 </details>
