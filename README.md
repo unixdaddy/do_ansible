@@ -184,7 +184,7 @@ $ ansible-playbook deploy-k8s.yml -i k8s-local <---  Builds VMs with these names
 - K8s environment is provisioned with CILIUM CNI (you can choose something else - CALICO)
 - DigitalOcean community collection is used - collections are the future
 - ansible.cfg in the project will define collection path - please install collections (see below) before running playbooks
-- presently doesn't use **become** playbooks - connects as root. Refactoring will create/use a user with sudo
+- presently doesn't use **become** in the playbooks - connects as root. Refactoring will create/use a user with sudo
 
 **_Ansible Tower_**
 
