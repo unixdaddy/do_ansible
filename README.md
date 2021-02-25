@@ -93,7 +93,7 @@ The focus will be on the last 2 playbooks
 **__How To Use__**
 
 *Set your DigitalOcean Token as an environment variable*
- - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx*
+ - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx
 
 *Install DigitalOcean Collection - see installing section*
 
