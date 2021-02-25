@@ -15,3 +15,4 @@
 {"level":"fatal","msg":"Gomplate.RunTemplates() failed with template: clencli/readme.tmpl:14:11: executing \"clencli/readme.tmpl\" at \u003cds \"db\"\u003e: error calling ds: yaml: line 35: could not find expected ':'\n","time":"2021-02-24T12:27:07Z"}
 {"level":"fatal","msg":"Gomplate.RunTemplates() failed with template: clencli/readme.tmpl:14:11: executing \"clencli/readme.tmpl\" at \u003cds \"db\"\u003e: error calling ds: yaml: line 31: could not find expected ':'\n","time":"2021-02-24T12:27:23Z"}
 {"level":"error","msg":"missing database clencli/blah.yaml","time":"2021-02-24T12:52:15Z"}
+{"level":"fatal","msg":"Gomplate.RunTemplates() failed with template: clencli/readme.tmpl:14:11: executing \"clencli/readme.tmpl\" at \u003cds \"db\"\u003e: error calling ds: yaml: line 74: mapping values are not allowed in this context\n","time":"2021-02-25T11:57:11Z"}
