@@ -14,7 +14,12 @@
   command: swapoff -av
 
 - name: disable swap after reboot
-  command: sed -i '/swap/s/^/#/' /etc/fstab
+  lineinfile: 
+    path: /etc/fstab
+    regexp: swap
+    state: absent
+    backup: yes
+  ignore_errors: yes
 
 # Set ip forwarding on in /proc and in the sysctl file and reload if necessary
 - sysctl:
@@ -57,7 +62,7 @@
       #- "{{ CRIO_REPO }}{{ OS }}/Release.key"
 
   # Install CRIO packages
-  - name: Install CRIO and COMMON packages
+  - name: Install CRIO and COMMON packages - Ubuntu
     apt:
       name: "{{ item }}"  
       update_cache: true
@@ -74,9 +79,10 @@
       name: firewalld
       enabled: false
       state: stopped
+    ignore_errors: yes
 
 # Add specified repository into sources list using specified filename.
-  - name: Add Repo
+  - name: Add CentOS/Redhat CRIO Repo
     get_url:
       url: "{{ item }}"
       dest: "{{ CENTOS_REPO_PATH }}/{{ item | basename }}"
@@ -85,7 +91,7 @@
       - "{{ CENTOS_CRIO_REPO }}"
 
   # Install CRIO packages
-  - name: Install CRIO and COMMON packages
+  - name: Install CRIO and COMMON packages - CentOS/Redhat
     yum:
       name: "{{ CRIO_PACKAGE }}"
       update_cache: true
@@ -138,35 +144,38 @@
     dest: "{{ CENTOS_REPO_PATH }}{{ CENTOS_K8S_REPO }}"
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
+- name: Install K8s on CentOS/Redhat
+  block:
 # Install K8s  packages
-- name: Install K8s packages
-  yum:
-    name: "{{ item }}"  
-    update_cache: true
-    disable_excludes: kubernetes
-  loop:
-    - "{{ K8S_PACKAGES }}"
+  - name: Install K8s packages - CentOS/Redhat
+    yum:
+      name: "{{ item }}"  
+      update_cache: true
+      disable_excludes: kubernetes
+    loop:
+      - "{{ K8S_PACKAGES }}"
 
-- name: Start and Enable kubelet
-  systemd:
-    state: restarted
-    enabled: true
-    daemon_reload: yes
-    name: kubelet
+  - name: Start and Enable kubelet - CentOS/Redhat
+    systemd:
+      state: restarted
+      enabled: true
+      daemon_reload: yes
+      name: kubelet
 
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
-- name: Install K8s packages
-  apt:
-    name: "{{ item }}"  
-    update_cache: true
-  loop:
-    - "{{ K8S_PACKAGES }}"
-  when: ansible_distribution == "Ubuntu"
+- name: Install K8s on Ubuntu
+  block:
+  - name: Install K8s packages - Ubuntu
+    apt:
+      name: "{{ item }}"  
+      update_cache: true
+    loop:
+      - "{{ K8S_PACKAGES }}"
 
 # Prevent K8S from being upgraded.
-- name: Set K8s on hold
-  command: apt-mark hold "{{ K8S_PACKAGES }}"
+  - name: Set K8s on hold - Ubuntu
+    command: apt-mark hold "{{ K8S_PACKAGES }}"
   when: ansible_distribution == "Ubuntu"
 
 # Restart CRI-O
