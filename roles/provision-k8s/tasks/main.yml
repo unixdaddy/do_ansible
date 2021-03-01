@@ -10,8 +10,11 @@
     - overlay
 
 # Disable Swap
-- name: disable swap
+- name: disable swap on the fly
   command: swapoff -av
+
+- name: disable swap after reboot
+  command: sed -i '/swap/s/^/#/' /etc/fstab
 
 # Set ip forwarding on in /proc and in the sysctl file and reload if necessary
 - sysctl:
@@ -140,6 +143,7 @@
   yum:
     name: "{{ item }}"  
     update_cache: true
+    disable_excludes: kubernetes
   loop:
     - "{{ K8S_PACKAGES }}"
 

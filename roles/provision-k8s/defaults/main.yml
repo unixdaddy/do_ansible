@@ -21,7 +21,8 @@ K8S_COMP_FILE: completion.bash.inc
 #calico
 #CNI: https://docs.projectcalico.org/manifests/calico.yaml
 #cilium
-CNI: https://raw.githubusercontent.com/cilium/cilium/HEAD/install/kubernetes/quick-install.yaml
+#CNI: https://raw.githubusercontent.com/cilium/cilium/HEAD/install/kubernetes/quick-install.yaml
+CNI: https://raw.githubusercontent.com/cilium/cilium/v1.9/install/kubernetes/quick-install.yaml
 NO_TAINT: kubectl taint node "{{ ansible_hostname }}" node-role.kubernetes.io/master:NoSchedule-
 APT_REPO_PATH: /etc/apt/sources.list.d/
 CRIO_PACKAGE: cri-o
