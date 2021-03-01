@@ -1,0 +1,10 @@
+---
+#ansible-playbook -i collections/ansible_collections/community/digitalocean/scripts/inventory/digital_ocean.py do-teardown.yml
+- hosts: all
+  gather_facts: yes
+  tasks:
+  - name:  teardown digitalocean droplets
+    community.digitalocean.digital_ocean_droplet:
+      id: "{{ ansible_product_serial }}"
+      oauth_token: "{{ lookup('env','OAUTH_TOKEN') }}"
+      state: absent

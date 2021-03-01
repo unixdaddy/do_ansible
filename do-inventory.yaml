@@ -1,0 +1,10 @@
+#  source ~/configs_git/do-token.env
+#  ansible-playbook do-inventory.yaml -i collections/ansible_collections/community/digitalocean/scripts/inventory/digital_ocean.py
+- hosts: all
+  gather_facts: yes
+  tasks:
+  - name: Create an inventory group for each architecture.
+    group_by:
+      key: "architecture-{{ ansible_machine }}"
+  - debug: var=groups
+
