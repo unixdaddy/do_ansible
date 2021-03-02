@@ -78,11 +78,13 @@ This repo uses the following from **MY** environment
 
 The playbooks aim is to deploy K8s environment - 1 Master and X number of workers either locally (on existing VMs in Virtualbox) or in the cloud to DigitalOcean (provisioning the droplets in the process).
 
-There are 4 playbooks in the repo
+There are 6 playbooks in the repo
 - module-role.yml - uses a role to deploy a droplet on DigitalOcean (ansible-engine digitalocean module)
   - used for basic testing of deploying droplets on DigitalOcean
 - collection-tower.yml - uses a role to deploy a droplet on DigitalOcean (community.digitalocean collection)
   - used for basic testing of deploying droplets on DigitalOcean
+- do-teardown.yml - used to teardown droplets on DigitalOcean (community.digitalocean collection)
+- do-inventory.yml - used to play with the dynamic inventory (script) to query DigitalOcean (not plugin inventory)
 - do-deploy-k8s.yml - uses a role to deploy X number of droplets on DigitalOcean and provision K8s (Centos/Redhat/Ubuntu) (community.digitalocean collection)
   - used for deploying droplets on DigitalOcean and then provisioning K8s master/worker nodes
 - deploy-k8s.yml - uses a role to provision K8s on pre-provisioned VMs (Centos/Redhat/Ubuntu) (community.digitalocean collection)
@@ -93,7 +95,7 @@ The focus will be on the last 2 playbooks
 **__How To Use__**
 
 *Set your DigitalOcean Token as an environment variable*
- - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx
+ - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx <-- I set this in a file which I source
 
 *Install DigitalOcean Collection - see installing section*
 
@@ -169,7 +171,7 @@ These playbooks will work in Tower if it has been configured correctly
 - project - this repo pulled into Ansible Tower (Tower will automatically pull in DigitalOcean Collection via requirements file)
 - credential - New Type for DigitalOcean Token - set as env (injector configuration)
 - credential - Machine credential to connect to the new machines - ssh key
-- Inventory - inventory configured with groups/hosts - use source from project to use K8s-host or K8-local inventories
+- Inventory - inventory configured with groups/hosts - use source from project (K8s-host or K8-local) or add dynamic inventory script - digital_ocean.py
 
   more will be added on this section later
 </details>
@@ -184,7 +186,8 @@ These playbooks will work in Tower if it has been configured correctly
 - [Ansible Engine](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) - Configuration Management and more
 - [DigitalOcean Ansible Collection](https://galaxy.ansible.com/community/digitalocean) - DigitalOcean Collection used for Ansible to interact with DigitalOcean Platform
 - [Kubernetes Production Environment](https://kubernetes.io/docs/setup/) - Knowledge of Kubernetes for container orchestration
-- [Cilium CNI](https://kubernetes.io/docs/setup/) - Knowledge of Cilium CNI - network connectivity between apps and containers
+- [Cilium CNI](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/) - Cilium CNI - network connectivity between apps and containers - https://docs.cilium.io/en/stable/intro/
+- [Hubble](https://docs.cilium.io/en/v1.9/gettingstarted/hubble/) - Hubble - Networking and Security observability - https://docs.cilium.io/en/stable/intro/
 
 </details>
 

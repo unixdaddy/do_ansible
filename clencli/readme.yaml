@@ -33,11 +33,13 @@ usage: |-
 
   The playbooks aim is to deploy K8s environment - 1 Master and X number of workers either locally (on existing VMs in Virtualbox) or in the cloud to DigitalOcean (provisioning the droplets in the process).
 
-  There are 4 playbooks in the repo
+  There are 6 playbooks in the repo
   - module-role.yml - uses a role to deploy a droplet on DigitalOcean (ansible-engine digitalocean module)
     - used for basic testing of deploying droplets on DigitalOcean
   - collection-tower.yml - uses a role to deploy a droplet on DigitalOcean (community.digitalocean collection)
     - used for basic testing of deploying droplets on DigitalOcean
+  - do-teardown.yml - used to teardown droplets on DigitalOcean (community.digitalocean collection)
+  - do-inventory.yml - used to play with the dynamic inventory (script) to query DigitalOcean (not plugin inventory)
   - do-deploy-k8s.yml - uses a role to deploy X number of droplets on DigitalOcean and provision K8s (Centos/Redhat/Ubuntu) (community.digitalocean collection)
     - used for deploying droplets on DigitalOcean and then provisioning K8s master/worker nodes
   - deploy-k8s.yml - uses a role to provision K8s on pre-provisioned VMs (Centos/Redhat/Ubuntu) (community.digitalocean collection)
@@ -48,7 +50,7 @@ usage: |-
   **__How To Use__**
 
   *Set your DigitalOcean Token as an environment variable*
-   - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx
+   - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx <-- I set this in a file which I source
 
   *Install DigitalOcean Collection - see installing section*
 
@@ -124,7 +126,7 @@ usage: |-
   - project - this repo pulled into Ansible Tower (Tower will automatically pull in DigitalOcean Collection via requirements file)
   - credential - New Type for DigitalOcean Token - set as env (injector configuration)
   - credential - Machine credential to connect to the new machines - ssh key
-  - Inventory - inventory configured with groups/hosts - use source from project to use K8s-host or K8-local inventories
+  - Inventory - inventory configured with groups/hosts - use source from project (K8s-host or K8-local) or add dynamic inventory script - digital_ocean.py
 
     more will be added on this section later
 
@@ -138,9 +140,12 @@ prerequisites:
 - description: Knowledge of Kubernetes for container orchestration
   name: Kubernetes Production Environment
   url: https://kubernetes.io/docs/setup/
-- description: Knowledge of Cilium CNI - network connectivity between apps and containers
+- description: Cilium CNI - network connectivity between apps and containers - https://docs.cilium.io/en/stable/intro/
   name: Cilium CNI
-  url: https://kubernetes.io/docs/setup/
+  url: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/
+- description: Hubble - Networking and Security observability - https://docs.cilium.io/en/stable/intro/
+  name: Hubble
+  url: https://docs.cilium.io/en/v1.9/gettingstarted/hubble/
 installing: |-
   for Ansible - use your package manager of choice OR pip
   ```
