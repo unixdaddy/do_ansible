@@ -97,9 +97,9 @@ The focus will be on the last 2 playbooks
 *Set your DigitalOcean Token as an environment variable*
  - export OAUTH_TOKEN=XXXXXXxxxxxxxxxxXXXXXXXXxx <-- I set this in a file which I source
 
-*Install DigitalOcean Collection - see installing section*
-
 *Clone this repo - see installing section*
+
+*Install DigitalOcean Collection - see installing section*
 
 
 Run do-deploy-k8s playbook which deploys DigitalOcean droplet(s) and then provisions them as a K8s master or as worker nodes
