@@ -122,7 +122,7 @@
     enabled: true
 
 
-- name: Download CRI-O tools
+- name: Download CRI-O and HELM tools
   unarchive:
     src: "{{ item }}"
     dest: /usr/local/bin
@@ -130,6 +130,7 @@
   loop:
     - "{{ CRICTL_PACKAGE }}"
     - "{{ CRITEST_PACKAGE }}"
+    - "{{ HELM_PACKAGE }}"
 
 # Copy K8s repo file to host 
 - name: Copy K8s file to host - Ubuntu

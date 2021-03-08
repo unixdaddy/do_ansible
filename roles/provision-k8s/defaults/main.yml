@@ -37,3 +37,4 @@ CGROUP_PATH: /etc/crio/crio.conf.d/
 CRICTL_VERSION: "v1.20.0"
 CRICTL_PACKAGE: https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ CRICTL_VERSION }}/crictl-{{ CRICTL_VERSION }}-linux-amd64.tar.gz
 CRITEST_PACKAGE: https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ CRICTL_VERSION }}/critest-{{ CRICTL_VERSION }}-linux-amd64.tar.gz
+HELM_PACKAGE: https://get.helm.sh/helm-v3.5.2-linux-amd64.tar.gz
