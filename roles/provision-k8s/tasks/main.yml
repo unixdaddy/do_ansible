@@ -154,7 +154,7 @@
       update_cache: true
       disable_excludes: kubernetes
     loop:
-      - "{{ K8S_PACKAGES }}"
+      - "{{ K8S_PACKAGE_VERSION }}"
 
   - name: Start and Enable kubelet - CentOS/Redhat
     systemd:
@@ -172,7 +172,7 @@
       name: "{{ item }}"  
       update_cache: true
     loop:
-      - "{{ K8S_PACKAGES }}"
+      - "{{ K8S_PACKAGE_VERSION }}"
 
 # Prevent K8S from being upgraded.
   - name: Set K8s on hold - Ubuntu

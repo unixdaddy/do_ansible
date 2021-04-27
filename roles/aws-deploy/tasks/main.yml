@@ -1,0 +1,14 @@
+---
+# tasks file for aws-deploy
+# Basic provisioning example
+- amazon.aws.ec2:
+    key_name: "{{ key }}"
+    instance_type: "{{ size }}"
+    image: "{{ image }}"
+    aws_access_key:  "{{ lookup('env','AWS_ACCESS_KEY_ID') }}" 
+    aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}" 
+    wait: yes
+    #group: webserver
+    #count: 3
+    #vpc_subnet_id: subnet-29e63245
+    #assign_public_ip: yes

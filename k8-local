@@ -1,5 +1,5 @@
 [master]
-k8s-master ansible_host=192.168.0.104
+k8s-master ansible_host=18.132.243.5 ansible_user=ubuntu
 
-[worker]
-k8s-node1 ansible_host=192.168.0.105
+#[worker]
+#k8s-node1 ansible_host=18.133.64.126 ansible_user=ubuntu

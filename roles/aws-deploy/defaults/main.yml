@@ -1,0 +1,5 @@
+---
+# defaults file for aws-deploy
+image: ami-096cb92bb3580c759
+size: t2.medium
+key: AnsibleTower
