@@ -3,3 +3,6 @@
 image: ami-096cb92bb3580c759
 size: t2.medium
 key: AnsibleTower
+instance_type: t2.medium
+region: eu-west-2
+group: K8s

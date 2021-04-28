@@ -1,0 +1,209 @@
+ok: [localhost] => {
+    "instance_info": {
+        "changed": true,
+        "msg": "All items completed",
+        "results": [
+            {
+                "ansible_loop_var": "item",
+                "changed": true,
+                "failed": false,
+                "instance_ids": [
+                    "i-0df007f8dd425bdef"
+                ],
+                "instances": [
+                    {
+                        "ami_launch_index": "0",
+                        "architecture": "x86_64",
+                        "block_device_mapping": {
+                            "/dev/sda1": {
+                                "delete_on_termination": true,
+                                "status": "attached",
+                                "volume_id": "vol-070d0ce3cef019970"
+                            }
+                        },
+                        "dns_name": "ec2-3-10-5-99.eu-west-2.compute.amazonaws.com",
+                        "ebs_optimized": false,
+                        "groups": {
+                            "sg-0799048955e71cfaa": "K8s"
+                        },
+                        "hypervisor": "xen",
+                        "id": "i-0df007f8dd425bdef",
+                        "image_id": "ami-096cb92bb3580c759",
+                        "instance_type": "t2.medium",
+                        "kernel": null,
+                        "key_name": "AnsibleTower",
+                        "launch_time": "2021-04-28T10:38:32.000Z",
+                        "placement": "eu-west-2c",
+                        "private_dns_name": "ip-172-31-14-83.eu-west-2.compute.internal",
+                        "private_ip": "172.31.14.83",
+                        "public_dns_name": "ec2-3-10-5-99.eu-west-2.compute.amazonaws.com",
+                        "public_ip": "3.10.5.99",
+                        "ramdisk": null,
+                        "region": "eu-west-2",
+                        "root_device_name": "/dev/sda1",
+                        "root_device_type": "ebs",
+                        "state": "running",
+                        "state_code": 16,
+                        "tags": {},
+                        "tenancy": "default",
+                        "virtualization_type": "hvm"
+                    }
+                ],
+                "invocation": {
+                    "module_args": {
+                        "assign_public_ip": null,
+                        "aws_access_key": "AKIAUOCXH2WOI6N4ZOX6",
+                        "aws_ca_bundle": null,
+                        "aws_config": null,
+                        "aws_secret_key": "VALUE_SPECIFIED_IN_NO_LOG_PARAMETER",
+                        "count": 1,
+                        "count_tag": null,
+                        "debug_botocore_endpoint_logs": false,
+                        "ebs_optimized": false,
+                        "ec2_url": null,
+                        "exact_count": null,
+                        "group": [
+                            "K8s"
+                        ],
+                        "group_id": null,
+                        "id": null,
+                        "image": "ami-096cb92bb3580c759",
+                        "instance_ids": null,
+                        "instance_initiated_shutdown_behavior": "stop",
+                        "instance_profile_name": null,
+                        "instance_tags": null,
+                        "instance_type": "t2.medium",
+                        "kernel": null,
+                        "key_name": "AnsibleTower",
+                        "monitoring": false,
+                        "network_interfaces": null,
+                        "placement_group": null,
+                        "private_ip": null,
+                        "profile": null,
+                        "ramdisk": null,
+                        "region": "eu-west-2",
+                        "security_token": null,
+                        "source_dest_check": null,
+                        "spot_launch_group": null,
+                        "spot_price": null,
+                        "spot_type": "one-time",
+                        "spot_wait_timeout": 600,
+                        "state": "present",
+                        "tenancy": "default",
+                        "termination_protection": null,
+                        "user_data": null,
+                        "validate_certs": true,
+                        "volumes": null,
+                        "vpc_subnet_id": null,
+                        "wait": true,
+                        "wait_timeout": 300,
+                        "zone": null
+                    }
+                },
+                "item": "k8s-master",
+                "tagged_instances": []
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": true,
+                "failed": false,
+                "instance_ids": [
+                    "i-0dc2200177cc8070f"
+                ],
+                "instances": [
+                    {
+                        "ami_launch_index": "0",
+                        "architecture": "x86_64",
+                        "block_device_mapping": {
+                            "/dev/sda1": {
+                                "delete_on_termination": true,
+                                "status": "attached",
+                                "volume_id": "vol-0fd6474cdd9258bc4"
+                            }
+                        },
+                        "dns_name": "ec2-35-178-163-93.eu-west-2.compute.amazonaws.com",
+                        "ebs_optimized": false,
+                        "groups": {
+                            "sg-0799048955e71cfaa": "K8s"
+                        },
+                        "hypervisor": "xen",
+                        "id": "i-0dc2200177cc8070f",
+                        "image_id": "ami-096cb92bb3580c759",
+                        "instance_type": "t2.medium",
+                        "kernel": null,
+                        "key_name": "AnsibleTower",
+                        "launch_time": "2021-04-28T10:39:15.000Z",
+                        "placement": "eu-west-2c",
+                        "private_dns_name": "ip-172-31-7-137.eu-west-2.compute.internal",
+                        "private_ip": "172.31.7.137",
+                        "public_dns_name": "ec2-35-178-163-93.eu-west-2.compute.amazonaws.com",
+                        "public_ip": "35.178.163.93",
+                        "ramdisk": null,
+                        "region": "eu-west-2",
+                        "root_device_name": "/dev/sda1",
+                        "root_device_type": "ebs",
+                        "state": "running",
+                        "state_code": 16,
+                        "tags": {},
+                        "tenancy": "default",
+                        "virtualization_type": "hvm"
+                    }
+                ],
+                "invocation": {
+                    "module_args": {
+                        "assign_public_ip": null,
+                        "aws_access_key": "AKIAUOCXH2WOI6N4ZOX6",
+                        "aws_ca_bundle": null,
+                        "aws_config": null,
+                        "aws_secret_key": "VALUE_SPECIFIED_IN_NO_LOG_PARAMETER",
+                        "count": 1,
+                        "count_tag": null,
+                        "debug_botocore_endpoint_logs": false,
+                        "ebs_optimized": false,
+                        "ec2_url": null,
+                        "exact_count": null,
+                        "group": [
+                            "K8s"
+                        ],
+                        "group_id": null,
+                        "id": null,
+                        "image": "ami-096cb92bb3580c759",
+                        "instance_ids": null,
+                        "instance_initiated_shutdown_behavior": "stop",
+                        "instance_profile_name": null,
+                        "instance_tags": null,
+                        "instance_type": "t2.medium",
+                        "kernel": null,
+                        "key_name": "AnsibleTower",
+                        "monitoring": false,
+                        "network_interfaces": null,
+                        "placement_group": null,
+                        "private_ip": null,
+                        "profile": null,
+                        "ramdisk": null,
+                        "region": "eu-west-2",
+                        "security_token": null,
+                        "source_dest_check": null,
+                        "spot_launch_group": null,
+                        "spot_price": null,
+                        "spot_type": "one-time",
+                        "spot_wait_timeout": 600,
+                        "state": "present",
+                        "tenancy": "default",
+                        "termination_protection": null,
+                        "user_data": null,
+                        "validate_certs": true,
+                        "volumes": null,
+                        "vpc_subnet_id": null,
+                        "wait": true,
+                        "wait_timeout": 300,
+                        "zone": null
+                    }
+                },
+                "item": "k8s-node1",
+                "tagged_instances": []
+            }
+        ]
+    }
+}
+

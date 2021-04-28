@@ -7,8 +7,40 @@
     image: "{{ image }}"
     aws_access_key:  "{{ lookup('env','AWS_ACCESS_KEY_ID') }}" 
     aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}" 
+    region: "{{ region }}"
+    group: "{{ group }}"
     wait: yes
+    instance_tags:
+      Name:  "{{hostvars[item].inventory_hostname}}"
     #group: webserver
     #count: 3
     #vpc_subnet_id: subnet-29e63245
     #assign_public_ip: yes
+  with_inventory_hostnames:
+    - master
+    - worker
+  register: instance_info
+
+- debug:
+    var: instance_info.results.instance_ids
+
+
+- name: Add host to group 'master'
+  add_host:
+    name: '{{ item.id }}'
+    ansible_ssh_host: '{{ item.public_ip }}'
+    groups: master
+  #when: item.data.droplet.name == "k8s-master"
+  when: item.find("master") != -1
+  loop: "{{ instance_info.results }}"
+- name: Add host to group 'worker'
+  add_host:
+    name: '{{ item.id }}'
+    ansible_ssh_host: '{{ item.public_ip} }'
+    groups: worker
+  #when: item.data.droplet.name != "k8s-master"
+  when: item.find("master") == -1
+  loop: "{{ instance_info.results }}"
+
+
+

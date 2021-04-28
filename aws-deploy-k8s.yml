@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  connection: local
+#  collections:
+#   - community.digitalocean
+
+  roles:
+    - role: aws-deploy
+      vars:
+        key_name: "AnsibleTower"
+        instance_type: "t2.medium"
+        image: "ami-096cb92bb3580c759"
+        #aws_access_key:  "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+        #aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+        region: "eu-west-2"
+        group: K8s
+        wait: yes
+        #group: webserver
+        #count: 3
+        #vpc_subnet_id: subnet-29e63245
+        #assign_public_ip: yes
+
+#- name: Configure K8s host
+#  hosts: master:worker
+#  vars:
+  
+   #  roles:
+#    - role: provision-k8s

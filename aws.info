@@ -1,1 +1,1 @@
-ansible localhost -m ec2 -a "image=ami-096cb92bb3580c759 region=eu-west-2 key_name=Ans48955e71cfaa instance_type=t2.medium" -vvv
+ansible localhost -m ec2 -a "image=ami-096cb92bb3580c759 region=eu-west-2 key_name=AnsibleTower group_id=sg-0799048955e71cfaa instance_type=t2.medium" -vvv
