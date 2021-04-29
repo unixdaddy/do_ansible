@@ -20,9 +20,11 @@
         #vpc_subnet_id: subnet-29e63245
         #assign_public_ip: yes
 
-#- name: Configure K8s host
-#  hosts: master:worker
-#  vars:
+- name: Configure K8s host
+  hosts: master:worker
+  become: yes
+  vars:
+    ansible_user: ubuntu
   
-   #  roles:
-#    - role: provision-k8s
+  roles:
+    - role: provision-k8s

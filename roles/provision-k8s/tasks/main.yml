@@ -1,4 +1,8 @@
 ---
+- name: debug
+  debug:
+    msg: "This is the master {{ inventory_hostname }}"
+
 # tasks file for roles/common
 # load required modules
 - name: Add the reqiured modules
@@ -236,7 +240,7 @@
       command: kubeadm token create --print-join-command
       register: kube_join_command
 
-  when: (ansible_hostname == "k8s-master") and (st.stat.exists == false)
+  when: (ansible_hostname == "k8s-master" or inventory_hostname == "k8s-master" ) and (st.stat.exists == false)
 
   #### Need to add joining additional masters lol
 - name: Join K8s workers to Master
@@ -248,7 +252,7 @@
     - name: Join worker to K8s-master
       command: "{{ hostvars[groups['master'][0]]['kube_join_command']['stdout'] }}"
 
-  when: (ansible_hostname != "k8s-master") and (st.stat.exists == false)
+  when: ((ansible_hostname != "k8s-master"  or inventory_hostname != "k8s-master" )) and ( st.stat.exists == false)
 
 - name: Update registery file
   replace:
