@@ -1,0 +1,11 @@
+ansible localhost -m ec2 -a "image=ami-096cb92bb3580c759 region=eu-west-2 key_name=AnsibleTower group_id=sg-0799048955e71cfaa instance_type=t2.medium" -vvv
+
+had to set these inbound ports/rules to be open on AWS SG for internal and external communications to work 
+like kubectl logs and exec to pods running on the worker nodes
+
+Type            Protocol Port range     Source                          Description - optional
+Custom TCP	TCP	30000 - 60000	0.0.0.0/0	                testing
+Custom TCP	TCP	6443	        0.0.0.0/0	                K8s
+Custom TCP	TCP	2379 - 2380	sg-0799048955e71cfaa / K8s	etcd
+SSH	        TCP	22	        0.0.0.0/0	                ssh
+Custom TCP	TCP	10250 - 10252	sg-0799048955e71cfaa / K8s	kubelet
