@@ -21,20 +21,8 @@
     - worker
   register: instance_info
 
-#- debug:
-#   var: instance_info.results.instance_ids
-
-- name: debug
-  debug:
-#      msg: "{{ item.value.name }}  {{item.value.state}} {{item.value.image}} {{item.value.flavor}} {{item.value.key_name}} {{item.value.security_group}} {{item.value.meta[0].group}} {{item.value.meta[0].deployment_name}}"
-    msg: "{{ item.instances[0].tags.Name }} {{ item.instances[0].public_ip }}"
-  loop: "{{ instance_info.results }}"
 
 - name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
-  # both wait_for and wait_for_connection work with the right delay/timeout
-  #wait_for_connection:
-  #  delay: 60
-  #  timeout: 300
   wait_for:
     host: "{{ item.instances[0].public_ip }}"
     port: 22
@@ -42,11 +30,8 @@
     timeout: 300
   loop: "{{ instance_info.results }}"
 
-
-
 - name: Add host to group 'master'
   add_host:
-  #  name: '{{ item.instances[0].dns_name }}'
     name: '{{ item.instances[0].tags.Name }}'
     ansible_ssh_host: '{{ item.instances[0].public_ip }}'
     groups: master
@@ -54,22 +39,13 @@
   loop: "{{ instance_info.results }}"
 - name: Add host to group 'worker'
   add_host:
-   #name: '{{ item.instances[0].dns_name }}'
     name: '{{ item.instances[0].tags.Name }}'
     ansible_ssh_host: '{{ item.instances[0].public_ip }}'
     groups: worker
   when: item.instances[0].tags.Name.find("master") == -1
   loop: "{{ instance_info.results }}"
 
-- name: Set k8s-master as a fact to be used in provisioning
-  set_fact:
-     master: '{{ item.instances[0].tags.Name }}'
-     cacheable: yes
-  when: item.instances[0].tags.Name.find("master") != -1
-  loop: "{{ instance_info.results }}"
-
 - name: debug
   debug:
-    msg: "{{ master }}"
+    msg: "hostname is {{ item.instances[0].tags.Name }} and public ip is {{ item.instances[0].public_ip }}"
   loop: "{{ instance_info.results }}"
-
