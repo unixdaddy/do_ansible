@@ -1,3 +1,5 @@
 collections:
   - name: community.digitalocean
     source: https://galaxy.ansible.com
+  - name: amazon.aws
+    source: https://galaxy.ansible.com
