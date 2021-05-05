@@ -1,0 +1,24 @@
+1045  echo GCP in VENV
+ 1046  pip install google-auth
+ 1047  pip install requests
+ 1048  echo create a SA in google
+ 1049  echo under IAM & Admin
+ 1050  echo under IAM \& Admin
+ 1051  echo create service account
+ 1052  echo https://docs.ansible.com/ansible/latest/scenario_guides/guide_gce.html
+ 1053  echo SA - https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount
+ 1054  echo generate a new key and download a json
+ 1055  ls ..
+ 1056  ls
+ 1057  ls cka-training-310608-124be82f0bbe.json
+ 1058  more cka-training-310608-124be82f0bbe.json
+ 1059  cd do_ansible_git/
+ 1060  ls
+ 1061  vim gcp-test.yml
+ 1062  cat gcp-test.yml
+ 1063  ansible-playbook gcp-test.yml
+
+need to add sa on IAM SA page (on IAM & Admin Page)
+create key (json) and upload to server
+set permissions - get email address of SA and then seleect IAM (on IAM & Admin Page), select ADD (at the top), enter the email and search for the 
+role - compute.admin

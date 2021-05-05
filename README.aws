@@ -1,3 +1,13 @@
+pip install awscli
+aws
+cat ~/configs_git/aws-token.env <-- access and secret key
+aws configure
+aws -h
+aws help
+aws s3 ls
+pip install boto boto3
+aws --version
+
 ansible localhost -m ec2 -a "image=ami-096cb92bb3580c759 region=eu-west-2 key_name=AnsibleTower group_id=sg-0799048955e71cfaa instance_type=t2.medium" -vvv
 
 had to set these inbound ports/rules to be open on AWS SG for internal and external communications to work 
