@@ -39,6 +39,7 @@
   - name: disable UFW
     ufw:
       state: disabled
+    ignore_errors: yes
 
 # Add specified repository into sources list using specified filename.
   - apt_repository:
@@ -197,7 +198,7 @@
 - name: Install K8s on Master
   block:
     - name: Install K8s
-      command: kubeadm init --apiserver-advertise-address={{ ansible_default_ipv4.address }} #--pod-network-cidr=192.168.0.0/16
+      command: kubeadm init --apiserver-advertise-address={{ ansible_default_ipv4.address }} --ignore-preflight-errors 'NumCPU' #--pod-network-cidr=192.168.0.0/16
 
     - name: Create a .kube directory if it does not exist
       file:

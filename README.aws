@@ -1,6 +1,11 @@
-pip install awscli
+pip install awscli <-- installs botocore
 aws
+####aws-token.env#####
 cat ~/configs_git/aws-token.env <-- access and secret key
+export AWS_ACCESS_KEY_ID=XXXXX
+export AWS_SECRET_ACCESS_KEY=XXXXX
+####aws-token.env#####
+source ~/configs_git/aws-token.env <-- access and secret key
 aws configure
 aws -h
 aws help

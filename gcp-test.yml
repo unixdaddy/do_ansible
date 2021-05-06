@@ -3,20 +3,90 @@
   gather_facts: no
 
   vars:
-    service_account_file: /root/cka-training-310608-124be82f0bbe.json
-    project: cka-training-310608
-    auth_kind: serviceaccount
-    scopes:
-      - https://www.googleapis.com/auth/compute
+  #  service_account_file: /root/cka-training-310608-124be82f0bbe.json
+  #  project: cka-training-310608
+  #  auth_kind: serviceaccount
+  #  scopes:
+  #    - https://www.googleapis.com/auth/compute
+    private_key_file: "/root/.ssh/google_compute_engine" # NOT SURE IF NEEDED
 
   tasks:
 
-   - name: Allocate an IP Address
-     gcp_compute_address:
+#  - name: Allocate an IP Address
+#     gcp_compute_address:
+#         state: present
+#         name: 'test-address1'
+#         region: 'us-west1'
+#         project: "{{ lookup('env','GCP_PROJECT') }}"
+#         auth_kind: "{{ lookup('env','GCP_AUTH_KIND') }}"
+#         service_account_file: "{{ lookup('env','GCP_SERVICE_ACCOUNT_FILE') }}"
+#         scopes: "{{ lookup('env','GCP_SCOPES') }}"
+   - name: create a instance
+     google.cloud.gcp_compute_instance:
+     #gcp_compute_instance:
          state: present
-         name: 'test-address1'
-         region: 'us-west1'
-         project: "{{ project }}"
-         auth_kind: "{{ auth_kind }}"
-         service_account_file: "{{ service_account_file }}"
-         scopes: "{{ scopes }}"
+         name:  "{{hostvars[item].inventory_hostname}}"
+         machine_type: n1-standard-1
+         zone: 'us-west1-a'
+         project: "{{ lookup('env','GCP_PROJECT') }}"
+         auth_kind: "{{ lookup('env','GCP_AUTH_KIND') }}"
+         service_account_file: "{{ lookup('env','GCP_SERVICE_ACCOUNT_FILE') }}"
+         scopes: "{{ lookup('env','GCP_SCOPES') }}"
+         disks: 
+           - auto_delete: true
+             boot: true
+             initialize_params:
+                 source_image: "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2004-focal-v20210429"
+                 disk_size_gb: 50
+   #          source: "{{ disk }}" <-- create the disk and then use it here OR use initialize_params and URL
+         network_interfaces:
+             - network: null # use default
+               access_configs:
+                 - name: 'External NAT'
+  #                nat_ip: "{{ address }}"  <-- create the address (like above) and then use it here OR let it grab one
+                   type: 'ONE_TO_ONE_NAT'
+     with_inventory_hostnames:
+     - master
+     - worker
+     register: instances
+
+   - name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
+     wait_for:
+       host: "{{item.networkInterfaces[0].accessConfigs[0].natIP}}"
+       port: 22
+       delay: 30
+       timeout: 300
+     loop: "{{ instances.results }}"
+
+   - name: Add host to group 'master'
+     add_host:
+       name: '{{item.name}}'
+       ansible_ssh_host: '{{ item.networkInterfaces[0].accessConfigs[0].natIP }}'
+       groups: master
+     when: item.name.find("master") != -1
+     loop: "{{ instances.results }}"
+   - name: Add host to group 'worker'
+     add_host:
+       name: '{{item.name}}'
+       ansible_ssh_host: '{{ item.networkInterfaces[0].accessConfigs[0].natIP }}'
+       groups: worker
+     when: item.name.find("master") == -1
+     loop: "{{ instances.results }}"
+
+   - name: debug output of instances
+     debug:
+       #var: instance.networkInterfaces[0].accessConfigs[0].natIP
+       msg: "This is the NAME: {{item.name}}, This is the IP: {{item.networkInterfaces[0].accessConfigs[0].natIP}}"
+     loop: "{{instances.results}}" 
+
+- name: Configure K8s host
+  hosts: master:worker
+  vars:
+          #ansible_ssh_user: root
+          ### don't work######ansible_ssh_private_key_file: "{{ lookup('file','~/.ssh/id_rsa') }}"
+          #workes##### ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+    ansible_ssh_private_key_file: "/root/.ssh/google_compute_engine" # NOT SURE IF NEEDED
+
+  roles:
+    - role: provision-k8s
+
