@@ -37,6 +37,6 @@ gcloud compute images list --uri | grep ubuntu <-- use the URL in initialize_par
 
 
 TODO:
-kubectl completion fails <-- need to check on aws
-apt HOLD is marking EVERYTHING <-- need to check on aws
+kubectl completion fails <-- OK on aws, fixed on GCP now
+apt HOLD is marking EVERYTHING <-- seems to be default not caused by me on AWS and GCP - no issue
 Need to open some Ports to use NODEPORT <-- WORKS on AWS as ports open to vpc create a rule with a tag and then on the instance reference the tag https://www.cloudsavvyit.com/4932/how-to-open-firewall-ports-on-a-gcp-compute-engine-instance/
