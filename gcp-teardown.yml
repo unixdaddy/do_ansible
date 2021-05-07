@@ -3,12 +3,11 @@
   connection: local
   gather_facts: yes
   tasks:
-  - name: Delete AWS EC2 instance(s)
-    community.aws.ec2_instance:
+  - name: Remove GCP instance(s)
+    google.cloud.gcp_compute_instance:
       name: "{{hostvars[item].inventory_hostname}}"
+      zone: us-west1-a
       state: absent
-      #network:
-      #  assign_public_ip: true
     with_inventory_hostnames:
     - master
     - worker

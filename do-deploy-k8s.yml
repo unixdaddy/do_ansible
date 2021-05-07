@@ -9,10 +9,9 @@
       vars:
         image: ubuntu-20-10-x64
         region: lon1
-        size: s-1vcpu-1gb
+        size: s-1vcpu-2gb
         state: present
         key: 29424620
-        #server: ansible-5
 
 - name: Configure K8s host
   hosts: master:worker
@@ -23,11 +22,3 @@
   
   roles:
     - role: provision-k8s
-  #tasks:
-  #- name: Collect only facts returned by facter
-  #  setup:
-  #  register: setup
-  #  tags: setup
-  #- name: debug output of facts
-  #  debug:
-  #    var: setup

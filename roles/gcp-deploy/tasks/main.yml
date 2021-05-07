@@ -1,2 +1,58 @@
 ---
 # tasks file for roles/gcp-deploy
+   - name: create a instance
+     google.cloud.gcp_compute_instance:
+     #gcp_compute_instance:
+         state: "{{ state }}" #present
+         name:  "{{hostvars[item].inventory_hostname}}"
+         machine_type: "{{ machine_type }}" # n1-standard-1
+         zone: "{{ zone }}" #'us-west1-a'
+         project: "{{ lookup('env','GCP_PROJECT') }}"
+         auth_kind: "{{ lookup('env','GCP_AUTH_KIND') }}"
+         service_account_file: "{{ lookup('env','GCP_SERVICE_ACCOUNT_FILE') }}"
+         scopes: "{{ lookup('env','GCP_SCOPES') }}"
+         disks: 
+           - auto_delete: true
+             boot: true
+             initialize_params:
+                 source_image: "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2004-focal-v20210429"
+                 disk_size_gb: 50
+   #          source: "{{ disk }}" <-- create the disk and then use it here OR use initialize_params and URL
+         network_interfaces:
+             - network: null # use default
+               access_configs:
+                 - name: 'External NAT'
+  #                nat_ip: "{{ address }}"  <-- create the address (like above) and then use it here OR let it grab one
+                   type: 'ONE_TO_ONE_NAT'
+     with_inventory_hostnames:
+     - master
+     - worker
+     register: instances
+
+   - name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
+     wait_for:
+       host: "{{item.networkInterfaces[0].accessConfigs[0].natIP}}"
+       port: 22
+       delay: 30
+       timeout: 300
+     loop: "{{ instances.results }}"
+
+   - name: Add host to group 'master'
+     add_host:
+       name: '{{item.name}}'
+       ansible_ssh_host: '{{ item.networkInterfaces[0].accessConfigs[0].natIP }}'
+       groups: master
+     when: item.name.find("master") != -1
+     loop: "{{ instances.results }}"
+   - name: Add host to group 'worker'
+     add_host:
+       name: '{{item.name}}'
+       ansible_ssh_host: '{{ item.networkInterfaces[0].accessConfigs[0].natIP }}'
+       groups: worker
+     when: item.name.find("master") == -1
+     loop: "{{ instances.results }}"
+
+   - name: debug output of instances
+     debug:
+       msg: "This is the NAME: {{item.name}}, This is the IP: {{item.networkInterfaces[0].accessConfigs[0].natIP}}"
+     loop: "{{instances.results}}" 
