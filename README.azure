@@ -1,0 +1,7 @@
+clone github for  azure
+cat requirements-azure.txt
+install requirements-azure
+ansible-collection install azure...
+setup subscription 
+setup resource group
+setup virtual network
