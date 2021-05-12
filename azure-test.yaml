@@ -39,10 +39,47 @@
     with_inventory_hostnames:
       - master
       - worker
-    register: instances_info
+    register: instances
 
   - name: debug instances
     debug:
       msg: "This is the name {{item.ansible_facts.azure_vm.name}} This is the Public IP {{item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
      # msg: "This is the NAME: {{item.name}}, This is the IP: {{item.networkInterfaces[0].accessConfigs[0].natIP}}"
-    loop: "{{instances_info.results}}"
+    loop: "{{instances.results}}"
+
+
+  - name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
+    wait_for:
+       host: "{{item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
+       port: 22
+       delay: 30
+       timeout: 300
+    loop: "{{ instances.results }}"
+
+  - name: Add host to group 'master'
+    add_host:
+       name: "{{item.ansible_facts.azure_vm.name}}"
+       ansible_ssh_host: "{{item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
+       groups: master
+    when: item.ansible_facts.azure_vm.name.find("master") != -1
+    loop: "{{ instances.results }}"
+  - name: Add host to group 'worker'
+    add_host:
+       name: "{{item.ansible_facts.azure_vm.name}}"
+       ansible_ssh_host:  "{{item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
+       groups: worker
+    when: item.ansible_facts.azure_vm.name.find("master") == -1
+    loop: "{{ instances.results }}"
+
+- name: Configure K8s host
+  hosts: master:worker
+  become: yes
+  vars:
+          #ansible_ssh_user: root
+          ### don't work######ansible_ssh_private_key_file: "{{ lookup('file','~/.ssh/id_rsa') }}"
+          #workes##### ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+          ansible_user: ansible
+
+  roles:
+  - role: provision-k8s
+

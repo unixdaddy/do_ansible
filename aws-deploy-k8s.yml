@@ -6,6 +6,7 @@
 
   roles:
     - role: aws-deploy
+      tags: aws-vm
       vars:
         key: "AnsibleTower"
         size: "t2.medium"
