@@ -229,11 +229,6 @@
 
     - name: Configure CNI from "{{ CNI }}"
       command: kubectl create -f "{{ CNI }}" 
-      when: platform != "azure" 
-
-    - name: Configure CNI from "{{ ALT_CNI }}" as Cilium has CIDR Clash
-      command: kubectl create -f "{{ ALT_CNI }}" 
-      when: platform == "azure" 
 
     - name: Remove Taint from K8s Master
       command: "{{ NO_TAINT }}" 
