@@ -18,3 +18,5 @@ Other Resources:
 https://dev.to/adudko/setting-up-a-single-master-kubernetes-cluster-on-azure-using-kubeadm-1cjn
 https://powersj.io/post/ubuntu-images-azure/
 https://lnx.azurewebsites.net/how-to-search-all-vm-images-in-azure/
+
+NOTE: need to open nodeport in azure firewall
