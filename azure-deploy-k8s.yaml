@@ -1,8 +1,8 @@
 - hosts: localhost 
   connection: local
   gather_facts: yes
-#  collections:
-#  - azure.azcollection
+  collections:
+  - azure.azcollection
   roles:
   - role: azure-deploy
     tags: azure-vm

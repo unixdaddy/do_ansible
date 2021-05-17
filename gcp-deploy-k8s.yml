@@ -4,6 +4,7 @@
 
   roles:
     - role: gcp-deploy
+      tags: gcp-vm
       vars:
          machine_type: "n1-standard-1"
          zone: "us-west1-a"

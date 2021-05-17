@@ -1,11 +1,12 @@
 ---
 # tasks file for roles/azure-deploy
   - name: Create VM with defaults
-    azure_rm_virtualmachine:
+    azure.azcollection.azure_rm_virtualmachine:
      resource_group: ansible
      name: "{{hostvars[item].inventory_hostname}}"
      admin_username: ansible
-     admin_password: pa$$w0rd
+     ssh_password_enabled: false
+     #admin_password: pa$$w0rd
      vm_size: Standard_B2s
      ssh_public_keys:
      - path: "/home/ansible/.ssh/authorized_keys"

@@ -6,6 +6,7 @@
 
   roles:
     - role: digitalocean-deploy
+      tags: do-vm
       vars:
         image: ubuntu-20-10-x64
         region: lon1
