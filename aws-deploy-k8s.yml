@@ -22,6 +22,7 @@
   become: yes
   vars:
     ansible_user: ubuntu
+    platform: aws
   
   roles:
     - role: provision-k8s
