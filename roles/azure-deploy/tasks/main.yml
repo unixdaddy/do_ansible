@@ -33,7 +33,7 @@
        host: "{{item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress}}"
        port: 22
        delay: 30
-       timeout: 300
+       timeout: 150
     loop: "{{ instances.results }}"
 
   - name: Add host to group 'master'

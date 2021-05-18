@@ -1,8 +1,7 @@
 ---
 - hosts: localhost
   connection: local
-#  collections:
-#   - community.digitalocean
+  gather_facts: yes
 
   roles:
     - role: aws-deploy
@@ -11,8 +10,6 @@
         key: "AnsibleTower"
         size: "t2.medium"
         image: "ami-096cb92bb3580c759"
-        #aws_access_key:  "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
-        #aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
         region: "eu-west-2"
         group: K8s
         wait: yes
