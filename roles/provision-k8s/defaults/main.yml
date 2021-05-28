@@ -5,7 +5,7 @@ CENTOS_OS: CentOS_8
 OS_1: xUbuntu_20.04 # not ideal
 CRIO_VERSION: "1.20"
 CENTOS_LIBCONTAINERS_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ CENTOS_OS }}/devel:kubic:libcontainers:stable.repo
-CENTOS_CRIO_REPO: https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:{{ CRIO_VERSION }}/{{ CENTOS_OS }}/devel:kubic:libcontainers:stable:cri-o:{{ CRIO_VERSION }}.repo
+CENTOS_CRIO_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:{{ CRIO_VERSION }}/{{ CENTOS_OS }}/devel:kubic:libcontainers:stable:cri-o:{{ CRIO_VERSION }}.repo
 CENTOS_REPO_PATH: /etc/yum.repos.d/
 LIBCONTAINERS_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ OS }}
 CRIO_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ CRIO_VERSION }}/{{OS}}
