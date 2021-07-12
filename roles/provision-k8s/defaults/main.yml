@@ -1,11 +1,11 @@
 ---
 # defaults file for roles/common
-OS: xUbuntu_20.04 # doesn't appear to be a 20.10 for crio
+OS: xUbuntu_20.10 # doesn't appear to be a 20.10 for crio
 CENTOS_OS: CentOS_8 
-OS_1: xUbuntu_20.04 # not ideal
-CRIO_VERSION: "1.20"
+OS_1: xUbuntu_20.10 # not ideal
+CRIO_VERSION: "1.21"
 CENTOS_LIBCONTAINERS_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ CENTOS_OS }}/devel:kubic:libcontainers:stable.repo
-CENTOS_CRIO_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:{{ CRIO_VERSION }}/{{ CENTOS_OS }}/devel:kubic:libcontainers:stable:cri-o:{{ CRIO_VERSION }}.repo
+CENTOS_CRIO_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ CRIO_VERSION }}/{{ CENTOS_OS }}/devel:kubic:libcontainers:stable:cri-o:{{ CRIO_VERSION }}.repo
 CENTOS_REPO_PATH: /etc/yum.repos.d/
 LIBCONTAINERS_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ OS }}
 CRIO_REPO: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ CRIO_VERSION }}/{{OS}}
@@ -13,10 +13,14 @@ K8S_KEY: https://packages.cloud.google.com/apt/doc/apt-key.gpg
 K8S_REPO: kubernetes.list
 CENTOS_K8S_REPO: kubernetes.repo
 K8S_CONFIG: /etc/kubernetes/admin.conf
+K8S_CENTOS_PACKAGE_VERSION: 
+  - kubelet-1.21.0-00
+  - kubeadm-1.21.0-00
+  - kubectl-1.21.0-00
 K8S_PACKAGE_VERSION: 
-  - kubelet=1.20.4-00
-  - kubeadm=1.20.4-00
-  - kubectl=1.20.4-00
+  - kubelet=1.21.0-00
+  - kubeadm=1.21.0-00
+  - kubectl=1.21.0-00
 K8S_PACKAGES: 
   - kubelet
   - kubeadm
@@ -26,7 +30,8 @@ K8S_COMP_FILE: completion.bash.inc
 ALT_CNI: https://docs.projectcalico.org/manifests/calico.yaml
 #cilium
 CNI: https://raw.githubusercontent.com/cilium/cilium/v1.9/install/kubernetes/quick-install.yaml
-NO_TAINT: kubectl taint node "{{ ansible_hostname }}" node-role.kubernetes.io/master:NoSchedule-
+#NO_TAINT: kubectl taint node "{{ ansible_hostname }}" node-role.kubernetes.io/master:NoSchedule-
+NO_TAINT: kubectl taint node "{{ ansible_fqdn }}" node-role.kubernetes.io/master:NoSchedule-
 APT_REPO_PATH: /etc/apt/sources.list.d/
 CRIO_PACKAGE: cri-o
 CRIO_PACKAGES:
@@ -37,7 +42,7 @@ COMMON_PACKAGES:
    - apt-transport-https
 CGROUP_FILE: 02-cgroup-manager.conf
 CGROUP_PATH: /etc/crio/crio.conf.d/
-CRICTL_VERSION: "v1.20.0"
+CRICTL_VERSION: "v1.21.0"
 CRICTL_PACKAGE: https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ CRICTL_VERSION }}/crictl-{{ CRICTL_VERSION }}-linux-amd64.tar.gz
 CRITEST_PACKAGE: https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ CRICTL_VERSION }}/critest-{{ CRICTL_VERSION }}-linux-amd64.tar.gz
 HELM_PACKAGE: https://get.helm.sh/helm-v3.5.2-linux-amd64.tar.gz
