@@ -227,7 +227,7 @@
         line: "source '{{ ansible_env.HOME }}/.kube/completion.bash.inc'"
         create: yes
 
-   - name: Configure CNI from "{{ CNI }}"
+    - name: Configure CNI from "{{ CNI }}"
       command: kubectl create -f "{{ CNI }}" 
       when: platform != "azure" 
 
