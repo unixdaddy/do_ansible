@@ -24,3 +24,33 @@ Custom TCP	TCP	6443	        0.0.0.0/0	                K8s
 Custom TCP	TCP	2379 - 2380	sg-0799048955e71cfaa / K8s	etcd
 SSH	        TCP	22	        0.0.0.0/0	                ssh
 Custom TCP	TCP	10250 - 10252	sg-0799048955e71cfaa / K8s	kubelet
+
+### A Cloud Guru - NEEDS US-EAST-1###
+#Uses Default VPC and no key is defined so can't connect"
+pip3 install awscli
+export AWS_ACCESS_KEY_ID=AKIA2E2ELGMDUBQBD4PL
+export AWS_SECRET_ACCESS_KEY=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
+aws s3 ls
+pip3 install boto boto3
+aws configure
+apt install jq
+# find an image
+sh images.sh ubuntu
+# or
+https://cloud-images.ubuntu.com/locator/ec2/
+# or
+aws ec2 describe-images --region us-east-1 --image-ids ami-1234567890EXAMPLE
+# create a key
+aws ec2 create-key-pair --key-name ansible_key --query 'KeyMaterial' --output text
+chmod 400 ansible_key
+#ansible localhost -m ec2_key -a "name=ansible_key key_material: '{{ lookup('file', '../.ssh/id_rsa.pub') }}' state=present"
+#ansible localhost -m ec2_key -a "name=ansible_key key_material: \"{{ lookup('file', '../.ssh/id_rsa.pub') }}\" "
+# create sg - edit the vpc
+# aws ec2 describe-vpcs
+ansible localhost -m ec2_group -e '{"route_ports":[{"proto": "tcp", "from_port": "22", "to_port": 22, "cidr_ip": "0.0.0.0/0"}]}' -a "name=example description=example region=us-east-1 vpc_id=vpc-0de73b9997b346b3f rules={{route_ports}}"
+# desribe key pair
+# aws ec2 describe-key-pairs
+# this image is in us-east-1 - also ami-04505e74c0741db8d 20.04
+ansible localhost -m ec2 -a "region=us-east-1 instance_type=t2.medium image=ami-00300977ac5b2eb86 key_name=ansible_key"
+## ubuntu 22.04 
+ansible localhost -m ec2 -a "region=us-east-1 instance_type=t2.medium image=ami-09d56f8956ab235b3 key_name=ansible_key group=example"
