@@ -28,8 +28,8 @@ Custom TCP	TCP	10250 - 10252	sg-0799048955e71cfaa / K8s	kubelet
 ### A Cloud Guru - NEEDS US-EAST-1###
 #Uses Default VPC and no key is defined so can't connect"
 pip3 install awscli
-export AWS_ACCESS_KEY_ID=AKIA2E2ELGMDUBQBD4PL
-export AWS_SECRET_ACCESS_KEY=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
+export AWS_ACCESS_KEY_ID=AKIA....
+export AWS_SECRET_ACCESS_KEY=l6UYBd.....
 aws s3 ls
 pip3 install boto boto3
 aws configure
