@@ -110,10 +110,10 @@
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
 # Copy CGROUP File for CRI-O to host
-#- name: Copy CGGROUP file to host
-#  copy:
-#    src: "{{ CGROUP_FILE }}"
-#    dest: "{{ CGROUP_PATH}}{{ CGROUP_FILE }}"
+- name: Copy CGGROUP file to host
+  copy:
+    src: "{{ CGROUP_FILE }}"
+    dest: "{{ CGROUP_PATH}}{{ CGROUP_FILE }}"
 
 - name: Issue daemon-reload and start CRIO
   systemd:
@@ -155,7 +155,7 @@
       update_cache: true
       disable_excludes: kubernetes
     loop:
-      - "{{ K8S_CENTOS_PACKAGE_VERSION }}"
+      - "{{ K8S_PACKAGE_VERSION }}"
 
   - name: Start and Enable kubelet - CentOS/Redhat
     systemd:

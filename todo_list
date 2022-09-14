@@ -1,0 +1,13 @@
+update READMEs
+
+Initial - do
+phase 1 - multi cloud providers
+phase 1a - variable tidy up
+phase 2 - infrastructure - GCP (https://developers.redhat.com/blog/2020/05/06/using-ansible-to-automate-google-cloud-platform#) also get azure/gcp from nocentino and aws/gcp from platform engineering ppt and also aws/gcp/azure from the ansible-docs. 
+phase 3 - managed clusters - eks,aks, gke, digitalocean-k8
+phase 4 - when and variable placement - default/main.yaml, group_var, include_var etc..
+phase 5 - collection
+phase 6 - Tower
+tidyup variables and defaults/main.yml
+azure - dns issue needs resolving
+skupper - linking clusters

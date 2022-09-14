@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  tasks:
+  - name: Remove Azure instance(s)
+    azure.azcollection.azure_rm_virtualmachine:
+      resource_group: ansible
+      name: "{{hostvars[item].inventory_hostname}}"
+      state: absent
+    with_inventory_hostnames:
+    - master
+    - worker

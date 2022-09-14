@@ -1,0 +1,45 @@
+---
+- name: Create AWS Instance(s)
+  community.aws.ec2_instance:
+    name: "{{hostvars[item].inventory_hostname}}"
+    key_name: "{{ key }}"
+    instance_type: "{{ size }}"
+    security_group: "{{ group }}"
+    region: "{{ region }}"
+    aws_access_key:  "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+    aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+    #network:
+    #  assign_public_ip: true
+    image_id: "{{ image }}"
+  with_inventory_hostnames:
+  - master
+  - worker
+  register: instance_info
+
+- name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
+  wait_for:
+     host: "{{ item.instances[0].public_ip_address }}"
+     port: 22
+     delay: 30
+     timeout: 300
+  loop: "{{ instance_info.results }}"
+
+- name: Add host to group 'master'
+  add_host:
+    name: '{{ item.instances[0].tags.Name }}'
+    ansible_ssh_host: '{{ item.instances[0].public_ip_address }}'
+    groups: master
+  when: item.instances[0].tags.Name.find("master") != -1
+  loop: "{{ instance_info.results }}"
+- name: Add host to group 'worker'
+  add_host:
+    name: '{{ item.instances[0].tags.Name }}'
+    ansible_ssh_host: '{{ item.instances[0].public_ip_address }}'
+    groups: worker
+  when: item.instances[0].tags.Name.find("master") == -1
+  loop: "{{ instance_info.results }}"
+
+- name: debug
+  debug:
+    msg: "hostname is {{ item.instances[0].tags.Name }} and public ip is {{ item.instances[0].public_ip_address }}"
+  loop: "{{ instance_info.results }}"

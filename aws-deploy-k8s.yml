@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  roles:
+    - role: aws-deploy
+      tags: aws-vm
+      vars:
+        key: "AnsibleTower"
+        size: "t2.medium"
+        #image: "ami-096cb92bb3580c759" #20.04 24/06/21 - works with crio 1.20
+        #image: "ami-093d303510c432519" #20.04 21/06/21 - works with crio 1.20
+        #image: "ami-0108be3664fc8cd8d" #20.10 04/06/21
+        image: "ami-017a249c75c9eee53" #20.10 23/06/21
+        #image: "ami-0fcfce3fd0d444b91" #21.04 15/06/21
+        #image: "ami-07e7f254e082ad651" #21.04 23/06/21
+        region: "eu-west-2"
+        group: K8s
+        wait: yes
+
+- name: Configure K8s host
+  hosts: master:worker
+  become: yes
+  vars:
+    ansible_user: ubuntu
+    platform: aws
+  
+  roles:
+    - role: provision-k8s

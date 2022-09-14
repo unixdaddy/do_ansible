@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  tasks:
+  - name: Remove GCP instance(s)
+    google.cloud.gcp_compute_instance:
+      name: "{{hostvars[item].inventory_hostname}}"
+      zone: us-west1-a
+      state: absent
+    with_inventory_hostnames:
+    - master
+    - worker

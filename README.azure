@@ -1,0 +1,164 @@
+useful:
+https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html
+https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_virtualmachine_module.html#ansible-collections-azure-azcollection-azure-rm-virtualmachine-module
+
+process:
+clone github for  azure
+  https://github.com/ansible-collections/azure
+pip install -r requirements-azure.txt
+ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections <-- see ansible.cfg
+setup subscription and service principal 
+   https://www.rootisgod.com/2021/Automating-Azure-with-Ansible-Part-1/
+   https://www.azuredevopslabs.com/labs/vstsextend/ansible/
+setup resource group
+setup virtual network
+
+
+Other Resources:
+https://dev.to/adudko/setting-up-a-single-master-kubernetes-cluster-on-azure-using-kubeadm-1cjn
+https://powersj.io/post/ubuntu-images-azure/
+https://lnx.azurewebsites.net/how-to-search-all-vm-images-in-azure/
+
+NOTE: need to open nodeport in azure firewall
+
+  425  source ../ansible-latest/bin/activate <-- virtualenv
+  426  ls
+  427  ansible-doc -l | grep azure
+  428  ansible-doc -l | grep azure | grep vm
+  429  ansible-doc -l | grep azure | grep virtual
+  430  ansible-doc -l | grep azure | grep virtualmachine
+  431  ansible-doc azure.azcollection.azure_rm_virtualmachine
+  432  ansible-doc -l | grep azure | grep virtualmachine
+  433  ansible-doc community.azure.azure_rm_virtualmachine_extension
+  451  echo install AZURE
+  452  curl -L https://aka.ms/InstallAzureCli | bash
+  453  az --help
+  454  az login
+  455  echo https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=script
+  456  az ad sp create-for-rbac --name ServicePrincipalName
+  457  az account show
+  458  az account show |grep id
+  459  echo https://docs.ansible.com/ansible/latest/scenario_guides/guide_azure.html
+  460  vim ~/configs_git/azure-token.env 
+  461  source ~/configs_git/azure-token.env 
+  463  ansible-doc azure.azcollection.azure_rm_virtualmachine
+  473  vim requirements-azure.txt
+  476  pip install -r requirements-azure.txt
+  477  ansible localhost -m azure.azcollection.azure_rm_virtualmachine -a "resource_group=crossplane name=test admin_username=dmcrae admin_password=T3mp_123 image=Centos"
+  478  az login
+  479  vim ~/configs_git/azure-token.env 
+  480  az account show |grep id
+  481  az account show
+  482  az account
+  483  az account list
+  485  az account show --output table
+  486  echo $AZURE_CONFIG_DIR
+  501  cd .azure/
+  505  mv accessTokens.json /tmp
+  513  mv azureProfile.json /tmp
+  514  az account show
+  515  az login
+  516  vim ~/configs_git/azure-token.env 
+  517  source ~/configs_git/azure-token.env 
+  518  env | grep AZURE
+  529  more configs_git/azure-token.env 
+  532  vim azure-test.yaml
+  533  az account list --output table
+  534  ansible localhost -m azure.azcollection.azure_rm_virtualmachine -a "resource_group=ansible name=test admin_username=dmcrae admin_password=T3mp_123 image=Centos"
+  536  ansible localhost -m azure.azcollection.azure_rm_resourcegroup -a "name=test"
+  537  ansible localhost -m azure.azcollection.azure_rm_resourcegroup -a "name=test location=northeurope"
+  548  az vm image list
+  549  az vm image list | grep -i ubuntu -A 6
+  550  az vm image list -all | grep -i ubuntu -A 6 -B 1
+  551  az vm image list --all | grep -i ubuntu -A 6 -B 1
+  554  az vm image list --all --offer Ubuntu
+  555  az vm image list --all --offer Ubuntu --publisher Canonical
+  556  az vm image list --all --offer Ubuntu --publisher Canonical --sku 20.04
+  557  az vm image list --all --offer Ubuntu --publisher Canonical --sku "*20.04*"
+  558  az vm image list --all --offer Ubuntu --publisher Canonical --sku 19_10-daily-gen2
+  559  az vm image list --all --offer Ubuntu --publisher Canonical --sku 30_04
+  560  az vm image list --all --offer Ubuntu --publisher Canonical --sku 20_04
+  562  az vm image show 
+  563  az vm image show --all --offer Ubuntu --publisher Canonical --sku 20_04
+  564  az vm image show  --offer Ubuntu --publisher Canonical --sku 20_04
+  565  az vm image show  --urn publisher:offer:sku:version
+  566  az vm image show  --offer Ubuntu --publisher Canonical --sku 20_04 --version 20.04.202101290
+  567  az vm image show  --urn Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202103250
+  568  az vm image show --all --offer Ubuntu --publisher Canonical --sku "20_04 LTS"
+  569  az vm image list --all --offer Ubuntu --publisher Canonical --sku "20_04 LTS"
+  570  az vm image list --all --offer Ubuntu --publisher Canonical --sku 20_04 LTS
+  571  az vm image list --all --offer Ubuntu --publisher Canonical --sku 20_04-lts
+  572  az vm image list --all --offer Ubuntu --publisher Canonical --sku 20_04-lts -f UbuntuServer
+  573  az vm image list-skus -l westeurope -p Canonical -f UbuntuServer --query [].name -o tsv
+  574  az vm image list-skus -p Canonical -f UbuntuServer --query [].name -o tsv
+  575  az vm image list-skus -l westeurope -p Canonical  --query [].name -o tsv
+  576  az vm image list-skus -l westeurope -p Canonical -f Ubuntu --query [].name -o tsv
+  577  az vm image list --all --offer Ubuntu --publisher Canonical --sku 20_04-lts
+  578  az vm image list-skus -l westeurope -p Canonical -f Ubuntu --query [].name -o tsv
+  579  az vm image list-skus -l westeurope -p Canonical -f UbuntuServer --query [].name -o tsv
+  580  az vm image list-skus -l westeurope -p Canonical -f UbuntuServer
+  581  az vm image list-skus -l northeurope -p Canonical -f Ubuntu --query [].name -o tsv
+  582  az vm image list-skus -l northeurope -p Canonical -f UbuntuServer --query [].name -o tsv
+  583  az vm image list-skus -l westeurope -p Canonical -f UbuntuLTS --query [].name -o tsv
+  584  az vm image list-skus -l northeurope -p Canonical -f UbuntuLTS --query [].name -o tsv
+  585  az vm image list-skus -l northeurope -p Canonical -f 20_04 --query [].name -o tsv
+  586  az vm image list --all --publisher Canonical |     jq '[.[] | select(.sku=="20_04-lts")]| max_by(.version)'
+  587  az vm image list --all --offer Ubuntu --publisher Canonical --sku 20_04-lts
+  588  az vm image list --all --publisher Canonical |     jq '[.[] | select(.sku=="20_04-lts")]| max_by(.version)'
+  592  ansible localhost -m azure.azcollection.azure_rm_virtualmachine -a "resource_group=ansible name=test admin_username=dmcrae admin_password=T3mp_123 image=Centos"
+  593  ansible-doc azure.azcollection.azure_rm_virtualmachine
+  600  vim azure-test.yaml 
+  602  ansible localhost -m azure.azcollection.azure_rm_resourcegroup -a "name=test location=northeurope"
+  632  source ~/configs_git/azure-token.env 
+  651  ansible-playbook azure-test.yaml -e 'resource_group_name=test'
+  671  ansible-playbook azure-test.yaml 
+  695  ssh ansible@13.82.219.5 -i ~/.ssh/id_rsa
+  696  ansible-playbook azure-test.yaml 
+  697  ansible-doc azure.azcollection.azure_rm_virtualmachine
+  698  vim azure-test.yaml 
+  709  ansible-playbook azure-test.yaml -i k8-hosts 
+  744  git status
+  746  git add .
+  747  git commit -m "Starting Azure build"
+  748  git push
+  749  git status
+  804  vim azure-test.yaml 
+  805  source ~/configs_git/azure-token.env 
+  807  source ~/ansible-latest/bin/activate
+  818  ansible-playbook azure-test.yaml -i k8-hosts 
+  835  vim k8-local 
+  838  ansible -m setup -i k8-local all
+  851  ansible localhost -m azure_rm_virtualmachine_info
+  862  ansible-playbook azure-test.yaml -i k8-hosts 
+  866  git add . 
+  867  git commit -m "added tag to aws-deploy and updated azure-test.yaml"
+  868  git remote
+  869  git branch
+  870  git push
+  915  vim azure-test.yaml 
+  916  ansible-playbook azure-test.yaml  -i k8-hosts 
+  969  git add .
+  970  git commit -m "AZURE working azure-test.yaml needed different CIDR for CNI"
+  971  git push
+  974  ansible-galaxy role init roles/azure-deploy
+  975  more azure-test.yaml 
+  976  cat azure-test.yaml >> roles/azure-deploy/tasks/main.yml 
+  977  vim roles/azure-deploy/tasks/main.yml
+  978  vim azure-test.yaml 
+  979  cp azure-test.yaml azure-deploy.yaml 
+  994  git status
+  995  git add .
+  996  git commit -m "converted azure to role, next tidyup and update README.azure for phase1"
+  997  git push
+ 1004  vim collections/requirements.yml 
+ 1007  ansible-galaxy collection install -r ./collections/requirements.yml -p ./collections
+ 1008  ansible-playbook azure-deploy.yaml  -i k8-hosts
+ 1010  pip install -r requirements-azure.txt
+ 1012  ansible-playbook azure-deploy.yaml  -i k8-hosts
+ 1016  vim roles/azure-deploy/tasks/main.yml 
+ 1017  ansible-playbook azure-deploy.yaml  -i k8-hosts
+ 1034  mv azure-deploy.yaml azure-deploy-k8s.yaml 
+ 1048  vim azure-teardown.yml 
+ 1049  more azure-deploy-k8s.yaml
+ 1058  ansible-playbook azure-teardown.yaml -i k8-hosts
+

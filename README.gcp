@@ -1,0 +1,43 @@
+1045  echo GCP in VENV
+ 1046  pip install google-auth
+ 1047  pip install requests
+ 1048  echo create a SA in google
+ 1049  echo under IAM & Admin
+ 1050  echo under IAM \& Admin
+ 1051  echo create service account
+ 1052  echo https://docs.ansible.com/ansible/latest/scenario_guides/guide_gce.html
+ 1053  echo SA - https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount
+ 1054  echo generate a new key and download a json <-- DO NOT PUT IN REPO
+###gcp-token.env#####
+cat ~/configs_git/gcp-token.env
+export GCP_AUTH_KIND=serviceaccount
+#causes a failure if set with an error message about not working with machineaccount or something
+#export GCP_SERVICE_ACCOUNT_EMAIL=ansible-sa@cka-training-310608.iam.gserviceaccount.com
+export GCP_PROJECT=cka-training-310608
+export GCP_SERVICE_ACCOUNT_FILE=/root/cka-training-310608-124be82f0bbe.json
+export GCP_SCOPES=https://www.googleapis.com/auth/compute
+####gcp-token.env####
+source ~/configs_git/gcp-token.env
+ 1055  ls ..
+ 1056  ls
+ 1057  ls cka-training-310608-124be82f0bbe.json
+ 1058  more cka-training-310608-124be82f0bbe.json
+ 1059  cd do_ansible_git/
+ 1060  ls
+ 1061  vim gcp-test.yml
+ 1062  cat gcp-test.yml
+ 1063  ansible-playbook gcp-test.yml
+
+need to add sa on IAM SA page (on IAM & Admin Page) <-- on this page when you add step 2 you can add role compute.admin (if not here then on IAM page (on IAM & Admin Page) after creating account - https://programmaticponderings.com/2019/01/30/getting-started-with-red-hat-ansible-for-google-cloud-platform/
+also need to create key (json) which is on permissions page of the SA and upload to server
+Only need to do the following if you didn't set the role when creating the account - set permissions - get email address of SA and then select IAM (on IAM & Admin Page), select ADD (at the top), enter the email and search for the 
+role - compute.admin
+
+gcloud compute images list --uri | grep ubuntu <-- use the URL in initialize_params: --> source_image: if you don't want to create a disk and attached (ansible-doc shows this method of creating the disk first) 
+
+
+TODO:
+kubectl completion fails <-- OK on aws, fixed on GCP now
+apt HOLD is marking EVERYTHING <-- seems to be default not caused by me on AWS and GCP - no issue
+Need to open some Ports to use NODEPORT <-- WORKS on AWS as ports open to vpc create a rule with a tag and then on the instance reference the tag https://www.cloudsavvyit.com/4932/how-to-open-firewall-ports-on-a-gcp-compute-engine-instance/
+https://developers.redhat.com/blog/2020/05/06/using-ansible-to-automate-google-cloud-platform# <-- will create infrastructure stack

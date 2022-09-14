@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  tasks:
+  - name: Delete AWS EC2 instance(s)
+    community.aws.ec2_instance:
+      name: "{{hostvars[item].inventory_hostname}}"
+      state: absent
+      #network:
+      #  assign_public_ip: true
+    with_inventory_hostnames:
+    - master
+    - worker

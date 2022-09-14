@@ -6,13 +6,13 @@
 
   roles:
     - role: digitalocean-deploy
+      tags: do-vm
       vars:
         image: ubuntu-20-10-x64
         region: lon1
-        size: s-1vcpu-1gb
+        size: s-1vcpu-2gb
         state: present
         key: 29424620
-        #server: ansible-5
 
 - name: Configure K8s host
   hosts: master:worker
@@ -20,14 +20,7 @@
           #ansible_ssh_user: root
           ### don't work######ansible_ssh_private_key_file: "{{ lookup('file','~/.ssh/id_rsa') }}"
           #workes##### ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+          platform: do
   
   roles:
     - role: provision-k8s
-  #tasks:
-  #- name: Collect only facts returned by facter
-  #  setup:
-  #  register: setup
-  #  tags: setup
-  #- name: debug output of facts
-  #  debug:
-  #    var: setup

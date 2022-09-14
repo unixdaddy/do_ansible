@@ -1,0 +1,31 @@
+- hosts: localhost 
+  connection: local
+  gather_facts: yes
+  collections:
+  - azure.azcollection
+  roles:
+  - role: azure-deploy
+    tags: azure-vm
+    vars:
+     # Turn our passed env variables into something ansible can use to talk to azure
+      client_id: "{{ lookup('env','AZURE_CLIENT_ID') }}"
+      secret: "{{ lookup('env','AZURE_SECRET') }}"
+      tenant_id: "{{ lookup('env','AZURE_TENANT') }}"
+      azure_clients_object_id: "{{ lookup('env','AZURE_CLIENTS_OBJECT_ID') }}" #TEMP - should figure this out at runtime
+      subscription_id: "{{ lookup('env','AZURE_SUBSCRIPTION_ID') }}"
+     # Where to deploy our resources by default
+      location: "northeurope"
+
+- name: Configure K8s host
+  hosts: master:worker
+  become: yes
+  vars:
+          #ansible_ssh_user: root
+          ### don't work######ansible_ssh_private_key_file: "{{ lookup('file','~/.ssh/id_rsa') }}"
+          #workes##### ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+          ansible_user: ansible
+          platform: azure
+
+  roles:
+  - role: provision-k8s
+
